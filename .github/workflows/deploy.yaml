@@ -69,12 +69,12 @@ jobs:
 
       - name: Initialize Terraform
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: tmp/terraform_cred_config.json
+          GOOGLE_APPLICATION_CREDENTIALS: ../tmp/terraform_cred_config.json
         working-directory: ./terraform
         run: terraform init
 
       - name: Apply Terraform
         working-directory: ./terraform
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: tmp/terraform_cred_config.json
+          GOOGLE_APPLICATION_CREDENTIALS: ../tmp/terraform_cred_config.json
         run: terraform apply -auto-approve
