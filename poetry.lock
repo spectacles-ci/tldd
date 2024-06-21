@@ -1556,6 +1556,21 @@ socks = ["PySocks (>=1.5.6,!=1.5.7)"]
 use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
 
 [[package]]
+name = "resend"
+version = "2.1.0"
+description = "Resend Python SDK"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "resend-2.1.0-py2.py3-none-any.whl", hash = "sha256:7f2a221983fab74a09f669c0c14a75daf547ffa4b4930141626d9cca55bca767"},
+    {file = "resend-2.1.0.tar.gz", hash = "sha256:92dc8e035c2ce8cf8210c1c322e86b0a4f509e0c82a80932d3323cd2f3a43d2d"},
+]
+
+[package.dependencies]
+requests = ">=2.31.0"
+typing-extensions = "*"
+
+[[package]]
 name = "rich"
 version = "13.7.1"
 description = "Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal"
@@ -2124,4 +2139,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "7d811d32a19b9f51e72cb8d703605f15ed2d2a46c3e3fe765fce517f8fc273e1"
+content-hash = "d83da22239dca5df852a6baa425fd899f0d39e9a34e9dbfe8253e3044c181166"
