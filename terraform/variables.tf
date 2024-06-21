@@ -7,3 +7,8 @@ variable "region" {
   description = "The region to deploy to"
   type        = string
 }
+
+variable "run_hash" {
+  description = "Commit Hash (to use for identifying image)"
+  default     = "latest"
+}
