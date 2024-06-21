@@ -53,7 +53,10 @@ jobs:
           gcloud auth configure-docker us-central1-docker.pkg.dev
 
       - name: Build and push Docker image
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
         run: |
+          echo $GOOGLE_APPLICATION_CREDENTIALS > /tmp/terraform_cred_config.json
           docker build -t us-central1-docker.pkg.dev/vertex-dashboards/vertex-dashboards/vertex-dashboards:latest . --platform linux/amd64
           docker push us-central1-docker.pkg.dev/vertex-dashboards/vertex-dashboards/vertex-dashboards:latest 
 
