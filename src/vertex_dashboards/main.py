@@ -49,7 +49,7 @@ async def receive_webhook(webhook: DashboardWebhook) -> str:
 
     response = model.generate_content(contents)
 
-    return response.text
+    return str(response.text)
 
 
 def main() -> None:
