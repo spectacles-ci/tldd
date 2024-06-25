@@ -128,9 +128,9 @@ async def run_summarizer(summarizer_id: str, webhook: DashboardWebhook) -> None:
         summarizer_id=summarizer_id,
         timestamp=datetime.now(),
     )
-    firestore_client.collection("summaries").document(summarizer_id).collection(
-        "summaries"
-    ).document(timestamp).set(summary.model_dump())
+    firestore_client.collection("summaries").document(
+        f"{summarizer_id}-{timestamp}"
+    ).set(summary.model_dump())
 
 
 def main() -> None:
