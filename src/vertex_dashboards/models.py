@@ -1,6 +1,8 @@
 """Models for the vertex_dashboards package."""
 
-from pydantic import BaseModel
+from typing import Optional
+
+from pydantic import BaseModel, EmailStr
 
 
 class Attachment(BaseModel):
@@ -20,3 +22,11 @@ class DashboardWebhook(BaseModel):
     attachment: Attachment
     scheduled_plan: ScheduledPlan
     type: str = "dashboard"
+
+
+class Summarizer(BaseModel):
+    recipients: list[EmailStr]
+    name: str
+    use_prior_reports: bool
+    attach_pdf: bool
+    custom_instructions: Optional[str] = None
