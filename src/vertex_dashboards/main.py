@@ -100,8 +100,35 @@ async def run_summarizer(summarizer_id: str, webhook: DashboardWebhook) -> None:
     pdf_file_uri = f"gs://{bucket.name}/{blob.name}"
     # TODO: Prompt engineering and RAG
     prompt = """
-        You are a very professional document summarization specialist.
-        Please summarize the given document.
+You are provided with a dashboard containing various data visualizations, charts, graphs, and key metrics. Your task is to analyze the dashboard and provide a comprehensive, data-dense summary. Follow these guidelines to ensure a thorough and accurate analysis:
+
+	1.	Overall Summary: Start with a brief overview of the dashboard’s theme and purpose.
+	2.	Key Metrics and Trends: Identify and describe the most important metrics and trends. Highlight significant changes, specific values, and relevant timeframes.
+	3.	Interesting Insights: Focus on notable data points and insights. Emphasize unusual patterns, correlations, or significant changes, ensuring accuracy.
+	4.	Comparative Analysis: Summarize any comparisons (e.g., year-over-year, month-over-month, category comparisons) and what they indicate.
+	5.	Performance Indicators: Discuss key performance indicators (KPIs) and their status. Mention if they are meeting, exceeding, or falling short of targets.
+	6.	Actionable Insights: Identify actionable insights derived from the data. Suggest possible actions or decisions informed by these insights.
+	7.	Confidence Level: Only highlight data and insights that you are confident in. Avoid unclear or ambiguous points.
+
+Example Analysis Structure:
+
+	•	Introduction: Briefly introduce the dashboard’s purpose and focus.
+	•	Key Findings: List significant metrics and trends with specific details.
+	•	Detailed Insights: Elaborate on noteworthy and confident data points.
+	•	Comparative Analysis: Discuss any relevant comparative data.
+	•	Conclusion: Summarize actionable insights and suggest potential actions.
+
+Sample Text:
+
+“The dashboard provides an overview of the company’s sales performance over the past year. Key metrics include a 15% increase in monthly sales with a peak in December 2023 and a steady upward trend in quarterly revenue.
+
+A notable insight is the correlation between marketing spend and sales performance, particularly in North America and Europe, which have higher sales figures linked to increased marketing investments.
+
+Comparative analysis shows that Q4 2023 sales were 20% higher than Q4 2022, indicating effective holiday sales strategies.
+
+The data suggests increasing marketing efforts in underperforming regions could boost sales. Maintaining current strategies in high-performing regions is advisable to sustain growth.
+
+Overall, the dashboard highlights a positive sales trajectory with actionable insights for further growth.
     """
     pdf_file = Part.from_uri(pdf_file_uri, mime_type="application/pdf")
     contents = [pdf_file, prompt]
