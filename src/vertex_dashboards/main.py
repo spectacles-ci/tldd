@@ -13,7 +13,7 @@ from google.cloud.logging import Client as LoggingClient
 from google.cloud.storage import Client as StorageClient
 from vertexai.generative_models import GenerativeModel, Part
 
-from vertex_dashboards.models import DashboardWebhook, Summarizer
+from vertex_dashboards.models import DashboardWebhook, Summarizer, Summary
 
 PROJECT_ID = "vertex-dashboards"
 
@@ -43,28 +43,61 @@ async def create_summarizer(summarizer_id: str, summarizer: Summarizer) -> None:
     )
 
 
-@app.post("/webhook")
-async def receive_webhook(webhook: DashboardWebhook) -> None:
+@app.get("/summarizer/{summarizer_id}")
+async def get_summarizer(summarizer_id: str) -> Summarizer:
+    """Endpoint to get a summarizer."""
+    summarizer = (
+        firestore_client.collection("summarizers").document(summarizer_id).get()
+    )
+    return summarizer.to_dict()
+
+
+@app.get("/summarizer")
+async def list_summarizers() -> list[Summarizer]:
+    """Endpoint to list all summarizers."""
+    summarizers = firestore_client.collection("summarizers").get()
+    return [summarizer.to_dict() for summarizer in summarizers]
+
+
+@app.post("/webhook/{summarizer_id}")
+async def run_summarizer(summarizer_id: str, webhook: DashboardWebhook) -> None:
+    """Endpoint to run a summarizer.
+
+    The service will decode the attachment, save it in GCS as a PDF,
+    run the LLM over it based on the summarizer config, and send
+    it to the email recipients.
+
+    It will also save a history of the summary in Firestore."""
+    # Load summarizer from Firestore
+    summarizer = (
+        firestore_client.collection("summarizers").document(summarizer_id).get()
+    )
+    summarizer_dict = summarizer.to_dict()
+    summarizer_config = Summarizer(**summarizer_dict)
+
+    # Decode the attachment
     attachment_data = webhook.attachment.data
     decoded_data = base64.b64decode(attachment_data)
+
+    # Save the attachment to GCS
     storage_client = StorageClient(project=PROJECT_ID)
     bucket = storage_client.bucket("vertex-dashboards")
     timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-    blob = bucket.blob(f"decoded_attachment_{timestamp}.pdf")
+    blob = bucket.blob(f"summaries/{summarizer_id}/{timestamp}.pdf")
     blob.upload_from_string(decoded_data, content_type="application/pdf")
     logger.info(f"Decoded data has been uploaded to GCS bucket: {blob.name}")
 
+    # Run the summarizer
     vertexai.init(project=PROJECT_ID, location="us-central1")
     model = GenerativeModel(model_name="gemini-1.5-flash-001")
     pdf_file_uri = f"gs://{bucket.name}/{blob.name}"
+    # TODO: Prompt engineering and RAG
     prompt = """
         You are a very professional document summarization specialist.
         Please summarize the given document.
     """
-
     pdf_file = Part.from_uri(pdf_file_uri, mime_type="application/pdf")
     contents = [pdf_file, prompt]
-
     response = model.generate_content(contents)
 
     resend.api_key = os.getenv("RESEND_API_KEY")
@@ -72,12 +105,25 @@ async def receive_webhook(webhook: DashboardWebhook) -> None:
     resend.Emails.send(
         {
             "from": "hello@spectacles.dev",
-            "to": "dylan@spectacles.dev",
+            "to": summarizer_config.recipients,
             "subject": "Your Dashboard Has Been AI Analyzed!",
             "html": f"<p>Here is the summary of your dashboard: {response.text}</p>",
             "attachments": [attachment],
         }
     )
+
+    # Save the Summary
+    summary = Summary(
+        body=response.text,
+        prompt=prompt,
+        report_location=pdf_file_uri,
+        recipients=summarizer_config.recipients,
+        summarizer_id=summarizer_id,
+        timestamp=datetime.now(),
+    )
+    firestore_client.collection("summaries").document(summarizer_id).collection(
+        "summaries"
+    ).document(timestamp).set(summary.model_dump())
 
 
 def main() -> None:
