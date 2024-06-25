@@ -1,5 +1,6 @@
 """Models for the vertex_dashboards package."""
 
+from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel, EmailStr
@@ -30,3 +31,13 @@ class Summarizer(BaseModel):
     use_prior_reports: bool
     attach_pdf: bool
     custom_instructions: Optional[str] = None
+
+
+class Summary(BaseModel):
+    body: str
+    prompt: str
+    report_location: str
+    prior_report_location: Optional[str] = None
+    recipients: list[EmailStr]
+    summarizer_id: str
+    timestamp: datetime
