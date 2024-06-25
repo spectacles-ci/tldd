@@ -1,13 +1,16 @@
 [tool.poetry]
-name = "vertex-dashboards"
-version = "0.1.0"
+name = "app"
+version = "0.0.1"
 description = ""
-authors = ["Dylan Baker <dylan@spectacles.dev>"]
+authors = [
+    "Dylan Baker <dylan@spectacles.dev>",
+    "Josh Temple <josh@spectacles.dev>",
+]
 readme = "README.md"
-packages = [{ include = "vertex_dashboards", from = "src" }]
+packages = [{ include = "app", from = "src" }]
 
 [tool.poetry.scripts]
-start = "vertex_dashboards.main:main"
+start = "app.main:main"
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -43,8 +46,7 @@ no_implicit_optional = true
 warn_unused_ignores = true
 
 [tool.ruff]
-line-length = 88  # Set maximum line length to 88 characters
+line-length = 88 # Set maximum line length to 88 characters
 
 [tool.ruff.lint]
-extend-select = ["I"]  # Extend the selection to include import conventions
-
+extend-select = ["I"] # Extend the selection to include import conventions
