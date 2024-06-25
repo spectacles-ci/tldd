@@ -1,10 +1,8 @@
-import React, { useContext } from "react";
-import { ExtensionContext } from "@looker/extension-sdk-react";
-import { Button, SummarizerTable } from "./components";
+import React from "react";
+import { Button, SummarizerTable } from "../components";
 import { useQuery } from "@tanstack/react-query";
 
-export const HelloWorld: React.FC = () => {
-  const { core40SDK } = useContext(ExtensionContext);
+export default function ListSummarizers() {
   const query = useQuery({
     queryKey: ["summarizers"],
     queryFn: () => {
@@ -29,9 +27,9 @@ export const HelloWorld: React.FC = () => {
     <div className="container mt-8 mx-auto px-4">
       <div className="flex mb-4 justify-between items-center">
         <h1 className="text-xl mb-4 text-gray-950">Summarizers</h1>
-        <Button>Create Summarizer</Button>
+        <Button href="/create">Create Summarizer</Button>
       </div>
       <SummarizerTable summarizers={query.data || []} />
     </div>
   );
-};
+}
