@@ -1,15 +1,21 @@
 import React from "react";
 import clsx from "clsx";
+import { useHistory } from "react-router-dom";
 
 export default function Button({
   children,
+  onClick,
+  href,
   variant = "primary",
   enabled = true,
 }: {
   children: React.ReactNode;
+  onClick?: () => void;
+  href?: string;
   variant?: "primary" | "secondary";
   enabled?: boolean;
 }) {
+  const history = useHistory();
   const resolvedVariant = enabled ? variant : "disabled";
   const baseStyles =
     "rounded px-3 py-2 text-base font-semibold shadow focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
@@ -21,7 +27,19 @@ export default function Button({
   const styles = clsx(baseStyles, variantStyles[resolvedVariant]);
 
   return (
-    <button type="button" className={styles} disabled={!enabled}>
+    <button
+      type="button"
+      onClick={() => {
+        if (href) {
+          history.push(href); // Ensure history.push is used correctly
+        }
+        if (onClick) {
+          onClick();
+        }
+      }}
+      className={styles}
+      disabled={!enabled}
+    >
       {children}
     </button>
   );

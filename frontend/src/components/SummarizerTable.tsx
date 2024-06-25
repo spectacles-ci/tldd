@@ -14,7 +14,7 @@ export default function SummarizerTable({
   }
 
   return (
-    <table className="w-full rounded border-separate border-spacing-0 border border-gray-200">
+    <table className="w-full rounded border-separate border-spacing-0 border border-gray-200 shadow">
       <thead className="bg-gray-100 text-left text-gray-700 text-sm font-semibold border-b border-gray-200">
         <tr>
           <th className="px-6 py-3 w-full">Name</th>
@@ -24,7 +24,7 @@ export default function SummarizerTable({
       </thead>
       <tbody className="text-sm text-gray-700">
         {summarizers.map((summarizer) => (
-          <tr>
+          <tr className="hover:bg-blue-50">
             <td className="px-6 py-4 w-full text-gray-950 border-b border-gray-200">
               {summarizer.name}
             </td>
@@ -57,7 +57,7 @@ export default function SummarizerTable({
       </tbody>
       <tfoot>
         <tr>
-          <td colSpan={3} className="px-6 py-3 bg-gray-50">
+          <td colSpan={3} className="px-6 py-3 bg-gray-100">
             <div className="flex justify-between items-center">
               <span className="text-sm text-gray-700">
                 Showing 1 to 10 of 34 results

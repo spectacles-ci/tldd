@@ -21,14 +21,18 @@ import React from "react";
 import { ExtensionProvider } from "@looker/extension-sdk-react";
 import { hot } from "react-hot-loader/root";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
-import { HelloWorld } from "./HelloWorld";
+import { Route, Switch } from "react-router-dom";
+import { ListSummarizers, CreateSummarizer, EditSummarizer } from "./pages";
 
 const queryClient = new QueryClient();
 export const App = hot(() => (
   <ExtensionProvider>
     <QueryClientProvider client={queryClient}>
-      <HelloWorld />
+      <Switch>
+        <Route exact path="/" component={ListSummarizers} />
+        <Route path="/create" component={CreateSummarizer} />
+        <Route path="/edit/:id" component={EditSummarizer} />
+      </Switch>
     </QueryClientProvider>
   </ExtensionProvider>
 ));

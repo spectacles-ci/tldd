@@ -26,7 +26,7 @@ export default function Input({
           type={type}
           placeholder={placeholder}
           {...props}
-          className="block w-full rounded border-0 py-1.5 text-gray-700 shadow-sm ring-1 ring-inset ring-gray-200 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-primary"
+          className="max-w-md block w-full rounded border-0 py-1.5 text-gray-700 shadow-sm ring-1 ring-inset ring-gray-200 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-primary"
         />
       </div>
     </div>
