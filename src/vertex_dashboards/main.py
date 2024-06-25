@@ -2,8 +2,10 @@
 
 import base64
 import logging
+import os
 from datetime import datetime
 
+import resend
 import vertexai
 from fastapi import FastAPI
 from google.cloud.logging import Client as LoggingClient
@@ -26,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 
 @app.post("/webhook")
-async def receive_webhook(webhook: DashboardWebhook) -> str:
+async def receive_webhook(webhook: DashboardWebhook) -> None:
     attachment_data = webhook.attachment.data
     decoded_data = base64.b64decode(attachment_data)
     storage_client = StorageClient(project=PROJECT_ID)
@@ -49,7 +51,17 @@ async def receive_webhook(webhook: DashboardWebhook) -> str:
 
     response = model.generate_content(contents)
 
-    return str(response.text)
+    resend.api_key = os.getenv("RESEND_API_KEY")
+    attachment = resend.Attachment(filename="dashboard.pdf", content=attachment_data)
+    resend.Emails.send(
+        {
+            "from": "hello@spectacles.dev",
+            "to": "dylan@spectacles.dev",
+            "subject": "Your Dashboard Has Been AI Analyzed!",
+            "html": f"<p>Here is the summary of your dashboard: {response.text}</p>",
+            "attachments": [attachment],
+        }
+    )
 
 
 def main() -> None:

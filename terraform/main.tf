@@ -24,6 +24,17 @@ resource "google_artifact_registry_repository" "vertex-dashboards" {
   project = var.project
 }
 
+resource "google_secret_manager_secret" "resend_api_key" {
+  secret_id = "resend-api-key"
+  replication {
+    user_managed {
+      replicas {
+        location = var.region
+      }
+    }
+  }
+}
+
 resource "google_cloud_run_service" "vertex_dashboards" {
   name     = "vertex-dashboards"
   location = var.region
@@ -34,6 +45,15 @@ resource "google_cloud_run_service" "vertex_dashboards" {
         image = "us-central1-docker.pkg.dev/vertex-dashboards/vertex-dashboards/vertex-dashboards:${var.run_hash}"
         ports {
           container_port = 8000
+        }
+        env {
+          name = "RESEND_API_KEY"
+          value_from {
+            secret_key_ref {
+              name = google_secret_manager_secret.resend_api_key.secret_id
+              key  = "latest"
+            }
+          }
         }
       }
     }
