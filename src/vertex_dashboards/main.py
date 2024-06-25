@@ -56,14 +56,23 @@ async def get_summarizer(summarizer_id: str) -> dict[str, Any]:
     summarizer = (
         firestore_client.collection("summarizers").document(summarizer_id).get()
     )
-    return summarizer.to_dict()  # type: ignore[no-any-return]
+    summarizer_dict = summarizer.to_dict()
+    last_receipt = await get_last_receipt(summarizer_id)
+    summarizer_dict["last_receipt_timestamp"] = last_receipt["timestamp"]
+    return summarizer_dict  # type: ignore[no-any-return]
 
 
 @app.get("/summarizer")
 async def list_summarizers() -> list[dict[str, Any]]:
     """Endpoint to list all summarizers."""
     summarizers = firestore_client.collection("summarizers").get()
-    return [summarizer.to_dict() for summarizer in summarizers]
+    response = []
+    for summarizer in summarizers:
+        last_receipt = await get_last_receipt(summarizer.id)
+        summarizer_dict = summarizer.to_dict()
+        summarizer_dict["last_receipt_timestamp"] = last_receipt["timestamp"]
+        response.append(summarizer_dict)
+    return response
 
 
 @app.delete("/summarizer/{summarizer_id}")
