@@ -26,6 +26,7 @@ class DashboardWebhook(BaseModel):
 
 
 class Summarizer(BaseModel):
+    id: str
     recipients: list[EmailStr]
     name: str
     use_prior_reports: bool
