@@ -96,7 +96,7 @@ async def run_summarizer(summarizer_id: str, webhook: DashboardWebhook) -> None:
 
     # Run the summarizer
     vertexai.init(project=PROJECT_ID, location="us-central1")
-    model = GenerativeModel(model_name="gemini-1.5-flash-001")
+    model = GenerativeModel(model_name="gemini-1.5-pro-001")
     pdf_file_uri = f"gs://{bucket.name}/{blob.name}"
     # TODO: Prompt engineering and RAG
     prompt = """
