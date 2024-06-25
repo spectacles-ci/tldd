@@ -23,6 +23,7 @@
     "@styled-icons/material": "10.34.0",
     "@styled-icons/material-outlined": "10.34.0",
     "@styled-icons/material-rounded": "10.34.0",
+    "@tanstack/react-query": "^4.0.0",
     "clsx": "^2.1.1",
     "date-fns": "^2.25.0",
     "lodash": "^4.17.21",
