@@ -4,6 +4,7 @@ import base64
 import logging
 import os
 from datetime import datetime
+from typing import Any
 
 import resend
 import vertexai
@@ -44,19 +45,25 @@ async def create_summarizer(summarizer_id: str, summarizer: Summarizer) -> None:
 
 
 @app.get("/summarizer/{summarizer_id}")
-async def get_summarizer(summarizer_id: str) -> Summarizer:
+async def get_summarizer(summarizer_id: str) -> dict[str, Any]:
     """Endpoint to get a summarizer."""
     summarizer = (
         firestore_client.collection("summarizers").document(summarizer_id).get()
     )
-    return summarizer.to_dict()
+    return summarizer.to_dict()  # type: ignore[no-any-return]
 
 
 @app.get("/summarizer")
-async def list_summarizers() -> list[Summarizer]:
+async def list_summarizers() -> list[dict[str, Any]]:
     """Endpoint to list all summarizers."""
     summarizers = firestore_client.collection("summarizers").get()
     return [summarizer.to_dict() for summarizer in summarizers]
+
+
+@app.delete("/summarizer/{summarizer_id}")
+async def delete_summarizer(summarizer_id: str) -> None:
+    """Endpoint to delete a summarizer."""
+    firestore_client.collection("summarizers").document(summarizer_id).delete()
 
 
 @app.post("/webhook/{summarizer_id}")
