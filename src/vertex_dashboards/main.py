@@ -8,11 +8,12 @@ from datetime import datetime
 import resend
 import vertexai
 from fastapi import FastAPI
+from google.cloud.firestore import Client as FirestoreClient
 from google.cloud.logging import Client as LoggingClient
 from google.cloud.storage import Client as StorageClient
 from vertexai.generative_models import GenerativeModel, Part
 
-from vertex_dashboards.models import DashboardWebhook
+from vertex_dashboards.models import DashboardWebhook, Summarizer
 
 PROJECT_ID = "vertex-dashboards"
 
@@ -25,6 +26,21 @@ logging_client.setup_logging()
 # Configure the root logger
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Configure Firestore client
+firestore_client = FirestoreClient(project=PROJECT_ID, database=PROJECT_ID)
+
+
+@app.post("/summarizer/{summarizer_id}")
+async def create_summarizer(summarizer_id: str, summarizer: Summarizer) -> None:
+    """Endpoint to create a summarizer."""
+    summarizer_dict = summarizer.model_dump()
+    firestore_client.collection("summarizers").document(summarizer_id).set(
+        summarizer_dict
+    )
+    logger.info(
+        f"Summarizer {summarizer_id} has been created and written to Firestore."
+    )
 
 
 @app.post("/webhook")

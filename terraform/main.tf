@@ -34,6 +34,12 @@ resource "google_secret_manager_secret" "resend_api_key" {
     }
   }
 }
+resource "google_firestore_database" "vertex_dashboards" {
+  name     = "vertex-dashboards"
+  project  = var.project
+  location_id = var.region
+  type     = "FIRESTORE_NATIVE"
+}
 
 resource "google_cloud_run_service" "vertex_dashboards" {
   name     = "vertex-dashboards"
