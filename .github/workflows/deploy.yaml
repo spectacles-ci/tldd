@@ -60,11 +60,7 @@ jobs:
           echo $GOOGLE_APPLICATION_CREDENTIALS > tmp/terraform_cred_config.json
 
       - name: Build and push Docker image
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
         run: |
-          mkdir -p tmp
-          echo $GOOGLE_APPLICATION_CREDENTIALS > tmp/terraform_cred_config.json
           docker build -t us-central1-docker.pkg.dev/vertex-dashboards/vertex-dashboards/vertex-dashboards:latest . --platform linux/amd64
           docker push us-central1-docker.pkg.dev/vertex-dashboards/vertex-dashboards/vertex-dashboards:latest 
 
@@ -73,12 +69,12 @@ jobs:
 
       - name: Initialize Terraform
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: /tmp/terraform_cred_config.json
+          GOOGLE_APPLICATION_CREDENTIALS: tmp/terraform_cred_config.json
         working-directory: ./terraform
         run: terraform init
 
       - name: Apply Terraform
         working-directory: ./terraform
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: /tmp/terraform_cred_config.json
+          GOOGLE_APPLICATION_CREDENTIALS: tmp/terraform_cred_config.json
         run: terraform apply -auto-approve
