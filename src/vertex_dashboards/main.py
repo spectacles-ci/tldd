@@ -131,7 +131,7 @@ async def get_last_receipt(summarizer_id: str) -> dict[str, Any]:
 
 
 @app.post("/webhook/{summarizer_id}")
-async def run_summarizer(summarizer_id: str, webhook: DashboardWebhook) -> None:
+async def receive_webhook(summarizer_id: str, webhook: DashboardWebhook) -> None:
     """Endpoint to run a summarizer.
 
     The service will decode the attachment, save it in GCS as a PDF,
