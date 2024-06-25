@@ -1,8 +1,8 @@
 
-project_name: "app"
+project_name: "tldd"
 
-application: app {
-  label: "app"
+application: tldd {
+  label: "tldd"
   url: "https://localhost:8080/bundle.js"
   # file: "bundle.js
   entitlements: {

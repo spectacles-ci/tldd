@@ -1,48 +1,36 @@
-// Copyright 2021 Google LLC
+import React, { useContext } from "react";
+import { ExtensionContext } from "@looker/extension-sdk-react";
+import { Button, Input, SummarizerTable } from "./components";
 
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-
-//     https://www.apache.org/licenses/LICENSE-2.0
-
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-import React, { useContext, useEffect, useState } from 'react'
-import { ComponentsProvider, Space, Span } from '@looker/components'
-import { ExtensionContext } from '@looker/extension-sdk-react'
-
-/**
- * A simple component that uses the Looker SDK through the extension sdk to display a customized hello message.
- */
 export const HelloWorld: React.FC = () => {
-  const { core40SDK } = useContext(ExtensionContext)
-  const [message, setMessage] = useState('')
-
-  useEffect(() => {
-    const getMe = async () => {
-      try {
-        const me = await core40SDK.ok(core40SDK.me())
-        setMessage(`Hello, ${me.display_name}`)
-      } catch (error) {
-        console.error(error)
-        setMessage('An error occurred while getting information about me!')
-      }
-    }
-    getMe()
-  }, [])
+  const { core40SDK } = useContext(ExtensionContext);
 
   return (
-    <ComponentsProvider>
-      <Space around>
-        <Span fontSize="xxxxxlarge">
-          {message}
-        </Span>
-      </Space>
-    </ComponentsProvider>
-  )
-}
+    <div className="container mt-8 mx-auto px-4">
+      <div className="flex mb-4 justify-between items-center">
+        <h1 className="text-xl mb-4 text-gray-950">Summarizers</h1>
+        <Button>Create Summarizer</Button>
+      </div>
+      <SummarizerTable
+        summarizers={[
+          {
+            id: "1",
+            name: "Marketing Weekly",
+            lastReceived: "2024-06-24T12:00:00Z",
+            recipients: [
+              "sherry@petgourmet.com",
+              "john@doe.com",
+              "jane@doe.com",
+            ],
+          },
+          {
+            id: "2",
+            name: "Financial Health QBR",
+            lastReceived: "2024-03-07T12:00:00Z",
+            recipients: ["juan.mendoza@petgourmet.com", "john@doe.com"],
+          },
+        ]}
+      />
+    </div>
+  );
+};
