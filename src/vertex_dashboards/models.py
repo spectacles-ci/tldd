@@ -42,3 +42,14 @@ class Summary(BaseModel):
     recipients: list[EmailStr]
     summarizer_id: str
     timestamp: datetime
+
+
+class Receipt(BaseModel):
+    timestamp: datetime
+    summarizer_id: str
+    report_location: str
+
+
+class SummaryRequest(BaseModel):
+    summarizer: Summarizer
+    receipt: Receipt
