@@ -31,7 +31,7 @@ resource "google_cloud_run_service" "vertex_dashboards" {
   template {
     spec {
       containers {
-        image = "us-central1-docker.pkg.dev/vertex-dashboards/vertex-dashboards/vertex-dashboards:latest"
+        image = "us-central1-docker.pkg.dev/vertex-dashboards/vertex-dashboards/vertex-dashboards:${var.run_hash}"
         ports {
           container_port = 8000
         }

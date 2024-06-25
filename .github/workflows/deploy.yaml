@@ -60,9 +60,11 @@ jobs:
           echo $GOOGLE_APPLICATION_CREDENTIALS > tmp/terraform_cred_config.json
 
       - name: Build and push Docker image
+        env:
+          IMAGE_NAME: us-central1-docker.pkg.dev/vertex-dashboards/vertex-dashboards/vertex-dashboards:${{ github.sha }}
         run: |
-          docker build -t us-central1-docker.pkg.dev/vertex-dashboards/vertex-dashboards/vertex-dashboards:latest . --platform linux/amd64
-          docker push us-central1-docker.pkg.dev/vertex-dashboards/vertex-dashboards/vertex-dashboards:latest 
+          docker build -t $IMAGE_NAME . --platform linux/amd64
+          docker push $IMAGE_NAME
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
@@ -77,4 +79,5 @@ jobs:
         working-directory: ./terraform
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ../tmp/terraform_cred_config.json
+          TF_VAR_run_hash: ${{ github.sha }}
         run: terraform apply -auto-approve
