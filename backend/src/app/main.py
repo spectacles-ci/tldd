@@ -14,11 +14,12 @@ from google.cloud.logging import Client as LoggingClient
 from google.cloud.storage import Client as StorageClient
 from vertexai.generative_models import GenerativeModel, Part
 
-from vertex_dashboards.models import DashboardWebhook, Summarizer, Summary
+from app.models import DashboardWebhook, Summarizer, Summary
 
 PROJECT_ID = "vertex-dashboards"
 
 app = FastAPI()
+
 
 # Initialize Google Cloud Logging
 logging_client = LoggingClient()
