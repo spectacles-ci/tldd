@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { ApiSummarizer, Summarizer } from "../types";
 import { useParams } from "react-router-dom";
+
+import { ApiSummarizer, Summarizer } from "../types";
 import { useApiUrl } from "../context/ApiContext";
 import EditSummarizerForm from "../components/EditSummarizerForm";
 
