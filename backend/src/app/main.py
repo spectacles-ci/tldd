@@ -1,10 +1,10 @@
 """Main module for the vertex_dashboards package."""
 
-from http import HTTPStatus
 import base64
 import logging
 import os
 from datetime import datetime
+from http import HTTPStatus
 from typing import Any
 
 import resend
