@@ -89,7 +89,7 @@ async def list_summarizers() -> list[dict[str, Any]]:
     summarizers = firestore_client.collection("summarizers").get()
     response = []
     for summarizer in summarizers:
-        last_receipt = await get_last_receipt(summarizer.id)
+        last_receipt = await _get_last_receipt(summarizer.id)
         summarizer_dict = summarizer.to_dict()
         if last_receipt:
             summarizer_dict["last_receipt_timestamp"] = last_receipt["timestamp"]
@@ -142,6 +142,18 @@ async def summarise(data: SummaryRequest) -> dict[str, Any]:
 @app.get("/summarizer/{summarizer_id}/receipt")
 async def get_last_receipt(summarizer_id: str) -> dict[str, Any] | None:
     """Endpoint to get the last receipt."""
+    receipt = await _get_last_receipt(summarizer_id)
+    if receipt:
+        return receipt
+    else:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail=f"No receipts found for summarizer {summarizer_id}",
+        )
+
+
+async def _get_last_receipt(summarizer_id: str) -> dict[str, Any] | None:
+    """Get the last receipt."""
     receipt_doc = (
         firestore_client.collection("receipts")
         .where("summarizer_id", "==", summarizer_id)
