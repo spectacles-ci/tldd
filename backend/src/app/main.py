@@ -77,7 +77,7 @@ async def get_summarizer(summarizer_id: str) -> dict[str, Any]:
         firestore_client.collection("summarizers").document(summarizer_id).get()
     )
     summarizer_dict = summarizer.to_dict()
-    last_receipt = await get_last_receipt(summarizer_id)
+    last_receipt = await _get_last_receipt(summarizer_id)
     if last_receipt:
         summarizer_dict["last_receipt_timestamp"] = last_receipt["timestamp"]
     return summarizer_dict  # type: ignore[no-any-return]
@@ -164,10 +164,7 @@ async def _get_last_receipt(summarizer_id: str) -> dict[str, Any] | None:
     try:
         return receipt_doc[0].to_dict()  # type: ignore[no-any-return]
     except IndexError:
-        raise HTTPException(
-            status_code=HTTPStatus.NOT_FOUND,
-            detail=f"No receipts found for summarizer {summarizer_id}",
-        )
+        return None
 
 
 @app.post("/webhook/{summarizer_id}")
