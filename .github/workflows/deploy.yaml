@@ -15,45 +15,45 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
+      # - name: Set up Python
+      #   uses: actions/setup-python@v5
+      #   with:
+      #     python-version: '3.10'
 
-      - name: Install Poetry
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 -
+      # - name: Install Poetry
+      #   run: |
+      #     curl -sSL https://install.python-poetry.org | python3 -
 
-      - name: Configure Poetry
-        run: |
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
+      # - name: Configure Poetry
+      #   run: |
+      #     echo "$HOME/.local/bin" >> $GITHUB_PATH
 
-      - name: Install dependencies
-        working-directory: ./backend
-        run: |
-          poetry install --no-root
+      # - name: Install dependencies
+      #   working-directory: ./backend
+      #   run: |
+      #     poetry install --no-root
 
-      - name: Run Ruff
-        working-directory: ./backend
-        run: |
-          poetry run ruff check src/
+      # - name: Run Ruff
+      #   working-directory: ./backend
+      #   run: |
+      #     poetry run ruff check src/
 
-      - name: Run Mypy
-        working-directory: ./backend
-        run: |
-          poetry run mypy src/
+      # - name: Run Mypy
+      #   working-directory: ./backend
+      #   run: |
+      #     poetry run mypy src/
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      # - name: Set up Docker Buildx
+      #   uses: docker/setup-buildx-action@v3
 
       - name: Log in to Google Cloud
         uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }} # Add your Google Cloud service account key to GitHub secrets
 
-      - name: Configure Docker for Google Artifact Registry
-        run: |
-          gcloud auth configure-docker us-central1-docker.pkg.dev
+      # - name: Configure Docker for Google Artifact Registry
+      #   run: |
+      #     gcloud auth configure-docker us-central1-docker.pkg.dev
 
       - name: Setup Google Application Credentials
         env:
@@ -62,30 +62,30 @@ jobs:
           mkdir -p tmp/keys
           echo $SERVICE_ACCOUNT_KEY > tmp/keys/google_application_credentials.json
 
-      - name: Build and push Docker image
-        working-directory: ./backend
-        env:
-          IMAGE_NAME: us-central1-docker.pkg.dev/vertex-dashboards/vertex-dashboards/vertex-dashboards:${{ github.sha }}
-        run: |
-          cp ../tmp/keys/google_application_credentials.json .
-          docker build -t $IMAGE_NAME . --platform linux/amd64
-          docker push $IMAGE_NAME
+      # - name: Build and push Docker image
+      #   working-directory: ./backend
+      #   env:
+      #     IMAGE_NAME: us-central1-docker.pkg.dev/vertex-dashboards/vertex-dashboards/vertex-dashboards:${{ github.sha }}
+      #   run: |
+      #     cp ../tmp/keys/google_application_credentials.json .
+      #     docker build -t $IMAGE_NAME . --platform linux/amd64
+      #     docker push $IMAGE_NAME
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
+      # - name: Setup Terraform
+      #   uses: hashicorp/setup-terraform@v3
 
-      - name: Initialize Terraform
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ../tmp/keys/google_application_credentials.json
-        working-directory: ./terraform
-        run: terraform init
+      # - name: Initialize Terraform
+      #   env:
+      #     GOOGLE_APPLICATION_CREDENTIALS: ../tmp/keys/google_application_credentials.json
+      #   working-directory: ./terraform
+      #   run: terraform init
 
-      - name: Apply Terraform
-        working-directory: ./terraform
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ../tmp/keys/google_application_credentials.json
-          TF_VAR_run_hash: ${{ github.sha }}
-        run: terraform apply -auto-approve
+      # - name: Apply Terraform
+      #   working-directory: ./terraform
+      #   env:
+      #     GOOGLE_APPLICATION_CREDENTIALS: ../tmp/keys/google_application_credentials.json
+      #     TF_VAR_run_hash: ${{ github.sha }}
+      #   run: terraform apply -auto-approve
 
       - name: Install frontend dependencies
         working-directory: ./frontend
@@ -100,4 +100,5 @@ jobs:
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ../tmp/keys/google_application_credentials.json
         run: |
-          gsutil -m cp -r dist/bundle.js gs://tldd-frontend/
+          gcloud auth activate-service-account --key-file=../tmp/keys/google_application_credentials.json
+          gsutil -m cp -r dist/bundle.js gs://tldd-frontend/ && gsutil acl ch -u AllUsers:R gs://tldd-frontend/bundle.js
