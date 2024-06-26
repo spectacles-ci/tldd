@@ -1,11 +1,11 @@
-
 project_name: "tldd"
 
 application: tldd {
   label: "tldd"
+  # url: "https://storage.googleapis.com/tldd-frontend/bundle.js"
   url: "https://localhost:8080/bundle.js"
-  # file: "bundle.js
   entitlements: {
-    core_api_methods: ["me"] #Add more entitlements here as you develop new functionality
+    external_api_urls: ["https://vertex-dashboards-2w54ohrt4q-uc.a.run.app", "https://localhost:8080"]
+    global_user_attributes: ["tldd_api"]
   }
 }
