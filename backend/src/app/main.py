@@ -1,5 +1,6 @@
 """Main module for the vertex_dashboards package."""
 
+from http import HTTPStatus
 import base64
 import logging
 import os
@@ -8,7 +9,7 @@ from typing import Any
 
 import resend
 import vertexai
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from google.cloud.firestore import Client as FirestoreClient
 from google.cloud.logging import Client as LoggingClient
@@ -151,7 +152,10 @@ async def get_last_receipt(summarizer_id: str) -> dict[str, Any] | None:
     try:
         return receipt_doc[0].to_dict()  # type: ignore[no-any-return]
     except IndexError:
-        return None
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail=f"No receipts found for summarizer {summarizer_id}",
+        )
 
 
 @app.post("/webhook/{summarizer_id}")
