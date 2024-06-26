@@ -4,7 +4,6 @@ FROM python:3.10-slim
 # Set environment variables
 ENV POETRY_VERSION=1.7.1
 ENV GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
-ARG SERVICE_ACCOUNT_KEY
 
 # Install Poetry
 RUN pip install "poetry==$POETRY_VERSION"
@@ -26,8 +25,7 @@ RUN poetry install --without dev --no-interaction --no-ansi -vvv
 EXPOSE 8000
 
 # Copy the GCP credentials file
-RUN echo $SERVICE_ACCOUNT_KEY > /app/credentials.json
+COPY google_application_credentials.json /app/credentials.json
 
 # Run the application
-CMD cat /app/credentials.json
 CMD ["poetry", "run", "start"]
