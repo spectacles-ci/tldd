@@ -103,8 +103,8 @@ async def delete_summarizer(summarizer_id: str) -> None:
     firestore_client.collection("summarizers").document(summarizer_id).delete()
 
 
-@app.post("/summarizer/{summarizer_id}/summarise")
-async def summarise(data: SummaryRequest) -> dict[str, Any]:
+@app.post("/summarizer/{summarizer_id}/summarize")
+async def summarize(data: SummaryRequest) -> dict[str, Any]:
     """Endpoint to run a summarizer."""
     summarizer = data.summarizer  # noqa: F841
     receipt = data.receipt
@@ -211,7 +211,7 @@ async def receive_webhook(summarizer_id: str, webhook: DashboardWebhook) -> None
 
     summarizer_config = Summarizer(**summarizer_dict)
 
-    response = await summarise(
+    response = await summarize(
         SummaryRequest(summarizer=summarizer_config, receipt=receipt)
     )
 
