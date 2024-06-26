@@ -13,10 +13,12 @@ export function SummarizerForm({
     form,
     onSubmit,
     isLoading,
+    summarizerId,
 }: {
     form: UseFormReturn<Summarizer>;
     onSubmit: (data: Summarizer) => void;
     isLoading: boolean;
+    summarizerId: string;
 }) {
     const { register, handleSubmit, watch, setValue } = form;
     const recipients = watch("recipients");
@@ -76,7 +78,7 @@ export function SummarizerForm({
                 register={register}
             />
             <TextArea id="customInstructions" label="Custom Instructions" register={register} />
-            <TestSummaryButton />
+            <TestSummaryButton summarizerId={summarizerId} />
             <div className="flex justify-end gap-x-4">
                 <Button href="/" variant="secondary" enabled={!isLoading}>
                     Cancel
