@@ -61,6 +61,8 @@ async def healthcheck() -> dict[str, Any]:
 async def create_summarizer(summarizer_id: str, summarizer: Summarizer) -> None:
     """Endpoint to create a summarizer."""
     summarizer_dict = summarizer.model_dump()
+    if summarizer_id != summarizer.id:
+        raise ValueError("Summarizer ID does not match the provided ID.")
     firestore_client.collection("summarizers").document(summarizer_id).set(
         summarizer_dict
     )
