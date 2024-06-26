@@ -23,16 +23,19 @@ import { hot } from "react-hot-loader/root";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Route, Switch } from "react-router-dom";
 import { ListSummarizers, CreateSummarizer, EditSummarizer } from "./pages";
+import { ApiProvider } from "./context/ApiContext";
 
 const queryClient = new QueryClient();
 export const App = hot(() => (
     <ExtensionProvider>
         <QueryClientProvider client={queryClient}>
-            <Switch>
-                <Route exact path="/" component={ListSummarizers} />
-                <Route path="/create" component={CreateSummarizer} />
-                <Route path="/edit/:id" component={EditSummarizer} />
-            </Switch>
+            <ApiProvider>
+                <Switch>
+                    <Route exact path="/" component={ListSummarizers} />
+                    <Route path="/create" component={CreateSummarizer} />
+                    <Route path="/edit/:id" component={EditSummarizer} />
+                </Switch>
+            </ApiProvider>
         </QueryClientProvider>
     </ExtensionProvider>
 ));
