@@ -11,7 +11,7 @@ export type Summarizer = {
     customInstructions: string | null;
 };
 
-export type ApiSummarizer = {
+export type SummarizerData = {
     [K in keyof Summarizer as CamelToSnakeCase<K>]: Summarizer[K];
 };
 
