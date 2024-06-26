@@ -57,7 +57,7 @@ async def healthcheck() -> dict[str, Any]:
     return {"status": "ok"}
 
 
-@app.post("/summarizer/{summarizer_id}")
+@app.post("/summarizer/")
 async def create_summarizer(summarizer: Summarizer) -> None:
     """Endpoint to create a summarizer."""
     summarizer_dict = summarizer.model_dump()
