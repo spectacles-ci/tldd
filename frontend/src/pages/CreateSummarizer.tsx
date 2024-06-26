@@ -38,11 +38,6 @@ export default function CreateSummarizer() {
             customInstructions: null,
         },
     });
-    const copyToClipboard = async () => {
-        await lookerExtension.extensionSDK.clipboardWrite(webhookUrl);
-        setIsCopied(true);
-        setTimeout(() => setIsCopied(false), 2000);
-    };
 
     const recipients = watch("recipients");
 
