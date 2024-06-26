@@ -11,7 +11,7 @@ export default function TestSummaryButton() {
       return true;
     },
   });
-  const [ready, setReady] = useState(true);
+  const [ready, setReady] = useState(false);
 
   return (
     <div className="flex items-center">

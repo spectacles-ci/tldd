@@ -23,7 +23,8 @@ export default function Button({
     primary: "bg-primary text-white hover:bg-primary-interactive",
     secondary:
       "bg-white text-gray-700 hover:bg-gray-50 ring-1 ring-inset ring-gray-200",
-    disabled: "bg-gray-100 text-gray-300 ring-gray-200 cursor-not-allowed",
+    disabled:
+      "bg-gray-100 text-gray-400 ring-1 ring-inset ring-gray-200 cursor-not-allowed",
   };
   const styles = clsx(baseStyles, variantStyles[resolvedVariant]);
 
