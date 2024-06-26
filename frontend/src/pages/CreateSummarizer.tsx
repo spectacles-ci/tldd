@@ -36,7 +36,7 @@ export default function CreateSummarizer() {
     <div className="container mt-8 mx-auto px-4 mb-8">
       <div className="max-w-3xl flex flex-col gap-y-6">
         <h1 className="text-xl text-gray-950">Create a Summarizer</h1>
-        <div className="bg-gray-50 gap-y-2 flex flex-col border border-gray-200 rounded p-4 text-xs">
+        <div className="bg-gray-50 gap-y-2 flex flex-col border border-gray-200 rounded p-4 text-xs shadow-sm">
           <p className="text-sm font-semibold text-gray-700">Webhook URL</p>
           <p className="text-xs text-gray-500">
             Create a schedule in Looker with the{" "}
@@ -76,10 +76,10 @@ export default function CreateSummarizer() {
             placeholder="Enter an email address"
             onKeyDown={handleKeyPress}
           />
-          <div className="flex flex-wrap items-center gap-x-2">
+          <div className="flex flex-wrap items-center gap-2">
             {recipients.map((recipient, index) => (
               <button
-                className="flex items-center bg-white px-1.5 py-1 border border-gray-200 hover:bg-gray-50 rounded shadow"
+                className="flex items-center bg-gray-50 px-1.5 py-1 border border-gray-200 hover:bg-gray-100 rounded-md shadow-sm"
                 onClick={() =>
                   setRecipients(recipients.filter((_, i) => i !== index))
                 }
