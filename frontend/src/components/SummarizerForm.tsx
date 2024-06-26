@@ -14,11 +14,17 @@ import { useHistory } from "react-router-dom";
 export function SummarizerForm({
     form,
     summarizerId,
-    actionText,
+    actions,
 }: {
     form: UseFormReturn<SummarizerFormState>;
     summarizerId: string;
-    actionText: string;
+    actions: {
+        text: string;
+        onClick?: () => void;
+        href?: string;
+        type?: "button" | "submit";
+        variant: "primary" | "secondary" | "danger";
+    }[];
 }) {
     const history = useHistory();
     const apiUrl = useApiUrl();
@@ -38,25 +44,8 @@ export function SummarizerForm({
                 }
             }
         },
-        [recipients, setValue]
+        [recipients, setValue],
     );
-    const handleDelete = useCallback(async () => {
-        try {
-            const response = await fetch(`${apiUrl}/summarizer/${summarizerId}`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-            if (!response.ok) {
-                throw new Error("Failed to delete summarizer");
-            }
-
-            history.push("/");
-        } catch (error) {
-            console.error("Error deleting summarizer:", error);
-        }
-    }, [summarizerId]);
 
     const onSubmit: SubmitHandler<SummarizerFormState> = async (data) => {
         setLoading(true);
@@ -67,7 +56,7 @@ export function SummarizerForm({
                 acc[newKey] = postData[key as keyof Omit<Summarizer, "recipient">];
                 return acc;
             },
-            {}
+            {},
         );
         await fetch(`${apiUrl}/summarizer/`, {
             method: "POST",
@@ -106,7 +95,7 @@ export function SummarizerForm({
                             onClick={() =>
                                 setValue(
                                     "recipients",
-                                    recipients.filter((_, i) => i !== index)
+                                    recipients.filter((_, i) => i !== index),
                                 )
                             }
                             key={`${recipient}-${index}`}
@@ -132,27 +121,24 @@ export function SummarizerForm({
             />
             <TextArea id="customInstructions" label="Custom Instructions" register={register} />
             <TestSummaryButton summarizerId={summarizerId} getSummarizer={getValues} setTestSummary={setTestSummary} />
-
             {testSummary && (
                 <div className="p-4 leading-7 text-gray-800 whitespace-pre-line bg-white rounded border border-gray-400 shadow-sm">
                     {testSummary}
                 </div>
             )}
-
-            <div className="flex gap-x-4 justify-end">
-                {actionText === "Create" ? (
-                    <Button href="/" variant={"secondary"} enabled={!isLoading}>
-                        Cancel
+            <div className="flex justify-end gap-x-4">
+                {actions.map((action, index) => (
+                    <Button
+                        key={index}
+                        onClick={action.onClick}
+                        href={action.href}
+                        variant={action.variant}
+                        type={action.type}
+                        enabled={!isLoading}
+                    >
+                        {action.text}
                     </Button>
-                ) : (
-                    <Button onClick={handleDelete} variant={"danger"} enabled={!isLoading}>
-                        Delete
-                    </Button>
-                )}
-
-                <Button type="submit" enabled={!isLoading}>
-                    {actionText}
-                </Button>
+                ))}
             </div>
         </form>
     );

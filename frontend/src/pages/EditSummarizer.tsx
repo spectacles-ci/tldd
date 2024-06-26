@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { SummarizerData, Summarizer } from "../types";
 import { useParams } from "react-router-dom";
+
+import { Summarizer, SummarizerData } from "../types";
 import { useApiUrl } from "../context/ApiContext";
 import EditSummarizerForm from "../components/EditSummarizerForm";
 

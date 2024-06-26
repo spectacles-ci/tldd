@@ -38,7 +38,7 @@ export default function CreateSummarizer() {
         },
     });
 
-    const { watch, setError } = form;
+    const { watch } = form;
 
     const summarizerId = watch("id");
 
@@ -47,7 +47,22 @@ export default function CreateSummarizer() {
             <div className="flex flex-col gap-y-6 max-w-3xl">
                 <h1 className="text-xl text-gray-950">Create a Summarizer</h1>
                 <SummarizerWebhook summarizerId={summarizerId} />
-                <SummarizerForm form={form} summarizerId={summarizerId} actionText="Create" />
+                <SummarizerForm
+                    form={form}
+                    summarizerId={summarizerId}
+                    actions={[
+                        {
+                            text: "Cancel",
+                            href: "/",
+                            variant: "secondary",
+                        },
+                        {
+                            text: "Create",
+                            variant: "primary",
+                            type: "submit",
+                        },
+                    ]}
+                />
             </div>
         </div>
     );
