@@ -29,4 +29,5 @@ EXPOSE 8000
 RUN echo $SERVICE_ACCOUNT_KEY > /app/credentials.json
 
 # Run the application
+CMD cat /app/credentials.json
 CMD ["poetry", "run", "start"]
