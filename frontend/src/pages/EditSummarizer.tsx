@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 
 import EditSummarizerForm from "../components/EditSummarizerForm";
 import { useApiUrl } from "../context/ApiContext";
-import { ApiSummarizer, Summarizer } from "../types";
+import { Summarizer, SummarizerData } from "../types";
 
 export default function EditSummarizer() {
     const { id } = useParams<{ id: string }>();
@@ -14,7 +14,7 @@ export default function EditSummarizer() {
     useEffect(() => {
         const fetchSummarizer = async () => {
             const response = await fetch(`${apiUrl}/summarizer/${id}`);
-            const data = (await response.json()) as ApiSummarizer;
+            const data = (await response.json()) as SummarizerData;
             const transformedData = Object.keys(data).reduce((acc, key) => {
                 const newKey = key.replace(/_(\w)/g, (match, p1) => p1.toUpperCase());
                 // @ts-ignore
@@ -29,8 +29,8 @@ export default function EditSummarizer() {
     if (!summarizer) return null;
 
     return (
-        <div className="container mt-8 mx-auto px-4 mb-8">
-            <div className="max-w-3xl flex flex-col gap-y-6">
+        <div className="container px-4 mx-auto mt-8 mb-8">
+            <div className="flex flex-col gap-y-6 max-w-3xl">
                 <h1 className="text-xl text-gray-950">Edit a Summarizer</h1>
                 <EditSummarizerForm summarizer={summarizer} />
             </div>

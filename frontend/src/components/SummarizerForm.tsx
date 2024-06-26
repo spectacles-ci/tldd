@@ -30,8 +30,9 @@ export function SummarizerForm({
     const apiUrl = useApiUrl();
 
     const [isLoading, setLoading] = useState(false);
+    const [testSummary, setTestSummary] = useState<string | null>(null);
 
-    const { register, handleSubmit, watch, setValue, setError } = form;
+    const { register, handleSubmit, watch, setValue, setError, getValues } = form;
     const recipients = watch("recipients");
     const handleKeyPress = useCallback(
         (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -87,7 +88,7 @@ export function SummarizerForm({
                     onKeyDown={handleKeyPress}
                     onChange={undefined}
                 />
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-wrap gap-2 items-center">
                     {recipients?.map((recipient, index) => (
                         <button
                             className="flex items-center bg-gray-50 px-1.5 py-1 border border-gray-200 hover:bg-gray-100 rounded-md shadow-sm"
@@ -100,7 +101,7 @@ export function SummarizerForm({
                             key={`${recipient}-${index}`}
                             type="button"
                         >
-                            <span className="text-gray-500 text-sm">{recipient}</span>
+                            <span className="text-sm text-gray-500">{recipient}</span>
                             <X className="text-gray-600 size-4 ml-0.5" />
                         </button>
                     ))}
@@ -119,7 +120,12 @@ export function SummarizerForm({
                 register={register}
             />
             <TextArea id="customInstructions" label="Custom Instructions" register={register} />
-            <TestSummaryButton summarizerId={summarizerId} />
+            <TestSummaryButton summarizerId={summarizerId} getSummarizer={getValues} setTestSummary={setTestSummary} />
+            {testSummary && (
+                <div className="p-4 leading-7 text-gray-800 whitespace-pre-line bg-white rounded border border-gray-400 shadow-sm">
+                    {testSummary}
+                </div>
+            )}
             <div className="flex justify-end gap-x-4">
                 {actions.map((action, index) => (
                     <Button
