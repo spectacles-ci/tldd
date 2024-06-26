@@ -34,13 +34,13 @@ To allow other people to use the extension, build the JavaScript bundle file and
 2. Drag and drop the generated `dist/bundle.js` file into the Looker project interface
 3. Modify your `manifest.lkml` to use `file` instead of `url`:
 
-   ```
-    project_name: "app"
-    application: app {
-        label: "A Looker React/TypeScript extension"
-        file: "bundle.js"
-        entitlements: {
-          core_api_methods: ["me"]
-        }
-    }
-   ```
+    ```
+     project_name: "app"
+     application: app {
+         label: "A Looker React/TypeScript extension"
+         file: "bundle.js"
+         entitlements: {
+           core_api_methods: ["me"]
+         }
+     }
+    ```
