@@ -3,8 +3,9 @@ export type Summarizer = {
     name: string;
     recipients: string[];
     usePriorReports: boolean;
-    attachOriginal: boolean;
+    attachPdf: boolean;
     customInstructions: string | null;
+    recipient: string;
 };
 
 export type SummarizerRow = {

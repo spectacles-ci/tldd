@@ -1,27 +1,27 @@
 import React from "react";
+import { UseFormRegister } from "react-hook-form";
+import { Summarizer } from "../types";
 
 export default function Checkbox({
     label,
     id,
-    name,
     description,
-    ...props
+    register,
 }: {
     label: string;
-    id: string;
-    name: string;
+    id: keyof Summarizer;
     description: string;
+    register: UseFormRegister<Summarizer>;
 } & React.InputHTMLAttributes<HTMLInputElement>) {
     return (
         <div className="relative flex items-start">
             <div className="flex h-6 items-center">
                 <input
                     id={id}
+                    {...register(id)}
                     aria-describedby={`${id}-description`}
-                    name={name}
                     type="checkbox"
                     className="h-4 w-4 rounded border-gray-200 text-primary focus:ring-primary"
-                    {...props}
                     defaultChecked
                 />
             </div>
