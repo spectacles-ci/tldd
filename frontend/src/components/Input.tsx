@@ -1,6 +1,6 @@
 import React from "react";
 import { UseFormRegister } from "react-hook-form";
-import { Summarizer } from "../types";
+import { SummarizerFormState } from "../types";
 
 export default function Input({
     id,
@@ -10,11 +10,11 @@ export default function Input({
     register,
     ...props
 }: {
-    id: keyof Summarizer;
+    id: keyof SummarizerFormState;
     label: string;
     type: string;
     placeholder: string;
-    register: UseFormRegister<Summarizer>;
+    register: UseFormRegister<SummarizerFormState>;
 } & React.InputHTMLAttributes<HTMLInputElement>) {
     return (
         <div>
