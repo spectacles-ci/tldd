@@ -26,13 +26,13 @@ import { ListSummarizers, CreateSummarizer, EditSummarizer } from "./pages";
 
 const queryClient = new QueryClient();
 export const App = hot(() => (
-  <ExtensionProvider>
-    <QueryClientProvider client={queryClient}>
-      <Switch>
-        <Route exact path="/" component={ListSummarizers} />
-        <Route path="/create" component={CreateSummarizer} />
-        <Route path="/edit/:id" component={EditSummarizer} />
-      </Switch>
-    </QueryClientProvider>
-  </ExtensionProvider>
+    <ExtensionProvider>
+        <QueryClientProvider client={queryClient}>
+            <Switch>
+                <Route exact path="/" component={ListSummarizers} />
+                <Route path="/create" component={CreateSummarizer} />
+                <Route path="/edit/:id" component={EditSummarizer} />
+            </Switch>
+        </QueryClientProvider>
+    </ExtensionProvider>
 ));
