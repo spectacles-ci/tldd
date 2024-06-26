@@ -1,3 +1,7 @@
+type CamelToSnakeCase<S extends string> = S extends `${infer T}${infer U}`
+    ? `${T extends Capitalize<T> ? "_" : ""}${Lowercase<T>}${CamelToSnakeCase<U>}`
+    : S;
+
 export type Summarizer = {
     id: string;
     name: string;
@@ -5,6 +9,13 @@ export type Summarizer = {
     usePriorReports: boolean;
     attachPdf: boolean;
     customInstructions: string | null;
+};
+
+export type ApiSummarizer = {
+    [K in keyof Summarizer as CamelToSnakeCase<K>]: Summarizer[K];
+};
+
+export type SummarizerFormState = Summarizer & {
     recipient: string;
 };
 
