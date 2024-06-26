@@ -68,7 +68,7 @@ jobs:
           IMAGE_NAME: us-central1-docker.pkg.dev/vertex-dashboards/vertex-dashboards/vertex-dashboards:${{ github.sha }}
           SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SA_KEY }}
         run: |
-          docker build -t $IMAGE_NAME . --platform linux/amd64 --build-arg SERVICE_ACCOUNT_KEY='$SERVICE_ACCOUNT_KEY'
+          docker build -t $IMAGE_NAME . --platform linux/amd64 --build-arg 'SERVICE_ACCOUNT_KEY=$SERVICE_ACCOUNT_KEY'
           docker push $IMAGE_NAME
 
       - name: Setup Terraform
