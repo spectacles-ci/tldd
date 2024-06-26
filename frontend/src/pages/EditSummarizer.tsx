@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
 import { SummarizerData, Summarizer } from "../types";
 import { useParams } from "react-router-dom";
 import { useApiUrl } from "../context/ApiContext";
@@ -29,8 +28,8 @@ export default function EditSummarizer() {
     if (!summarizer) return null;
 
     return (
-        <div className="container mt-8 mx-auto px-4 mb-8">
-            <div className="max-w-3xl flex flex-col gap-y-6">
+        <div className="container px-4 mx-auto mt-8 mb-8">
+            <div className="flex flex-col gap-y-6 max-w-3xl">
                 <h1 className="text-xl text-gray-950">Edit a Summarizer</h1>
                 <EditSummarizerForm summarizer={summarizer} />
             </div>

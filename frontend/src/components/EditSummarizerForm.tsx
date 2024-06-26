@@ -11,12 +11,9 @@ export default function EditSummarizerForm({ summarizer }: { summarizer: Summari
     });
 
     return (
-        <div className="container mt-8 mx-auto px-4 mb-8">
-            <div className="max-w-3xl flex flex-col gap-y-6">
-                <h1 className="text-xl text-gray-950">Create a Summarizer</h1>
-                <SummarizerWebhook summarizerId={summarizer.id} />
-                <SummarizerForm form={form} summarizerId={summarizer.id} actionText="Update" />
-            </div>
-        </div>
+        <>
+            <SummarizerWebhook summarizerId={summarizer.id} />
+            <SummarizerForm form={form} summarizerId={summarizer.id} actionText="Update" />
+        </>
     );
 }
