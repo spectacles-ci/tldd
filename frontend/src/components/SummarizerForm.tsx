@@ -32,7 +32,7 @@ export function SummarizerForm({
                 }
             }
         },
-        [recipients, setValue]
+        [recipients, setValue],
     );
     return (
         <form className="flex flex-col gap-y-6" onSubmit={handleSubmit(onSubmit)}>
@@ -54,7 +54,7 @@ export function SummarizerForm({
                             onClick={() =>
                                 setValue(
                                     "recipients",
-                                    recipients.filter((_, i) => i !== index)
+                                    recipients.filter((_, i) => i !== index),
                                 )
                             }
                             key={`${recipient}-${index}`}

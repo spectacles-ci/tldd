@@ -50,7 +50,7 @@ export function SummarizerWebhook({
                             {
                                 "border-primary": isCopied,
                                 "border-gray-200": !isCopied,
-                            }
+                            },
                         )}
                         onClick={copyToClipboard}
                     >
