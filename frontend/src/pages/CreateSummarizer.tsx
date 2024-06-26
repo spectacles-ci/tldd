@@ -81,7 +81,7 @@ export default function CreateSummarizer() {
             </span>
           </div>
         </div>
-        <form>
+        <form className="flex flex-col gap-y-6">
           <Input
             id="name"
             name="name"
