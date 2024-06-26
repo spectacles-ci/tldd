@@ -16,7 +16,7 @@ export default function CreateSummarizer() {
 
     useEffect(() => {
         const getAttribute = async () => {
-            const attribute = await lookerExtension.extensionSDK.userAttributeGetItem("first_name");
+            const attribute = await lookerExtension.extensionSDK.userAttributeGetItem("tldd_api");
             setUserAttribute(attribute ?? "");
         };
         getAttribute();
