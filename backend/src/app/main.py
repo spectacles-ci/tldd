@@ -4,11 +4,12 @@ import base64
 import logging
 import os
 from datetime import datetime
+from http import HTTPStatus
 from typing import Any
 
 import resend
 import vertexai
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from google.cloud.firestore import Client as FirestoreClient
 from google.cloud.logging import Client as LoggingClient
@@ -151,7 +152,10 @@ async def get_last_receipt(summarizer_id: str) -> dict[str, Any] | None:
     try:
         return receipt_doc[0].to_dict()  # type: ignore[no-any-return]
     except IndexError:
-        return None
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail=f"No receipts found for summarizer {summarizer_id}",
+        )
 
 
 @app.post("/webhook/{summarizer_id}")
@@ -204,12 +208,18 @@ async def receive_webhook(summarizer_id: str, webhook: DashboardWebhook) -> None
 
     resend.api_key = os.getenv("RESEND_API_KEY")
     attachment = resend.Attachment(filename="dashboard.pdf", content=attachment_data)
+
+    with open("src/app/email.html", "r") as file:
+        email_template = file.read()
+
+    email_template = email_template.replace("__body__", response["body"])
+
     resend.Emails.send(
         {
             "from": "hello@spectacles.dev",
             "to": summarizer_config.recipients,
             "subject": "Your Dashboard Has Been AI Analyzed!",
-            "html": f"<p>Here is the summary of your dashboard: {response['body']}</p>",
+            "html": email_template,
             "attachments": [attachment],
         }
     )
