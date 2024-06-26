@@ -8,13 +8,32 @@ import {
 } from "../components";
 import clsx from "clsx";
 import { Clipboard, X } from "../components/icons";
+import type { Summarizer } from "../types";
 
 export default function CreateSummarizer() {
+  const [formData, setFormData] = useState<Summarizer>({
+    id: "",
+    name: "",
+    recipients: [],
+    usePriorReports: true,
+    attachOriginal: true,
+    customInstructions: null,
+  });
   const [recipients, setRecipients] = useState<string[]>([]);
   const [webhookUrl, setWebhookUrl] = useState<string>(
     "https://aed42f-summarize.run.app/a294cd29dfa322"
   );
   const [isCopied, setIsCopied] = useState<boolean>(false);
+
+  function handleChange(event: React.ChangeEvent<HTMLElement>) {
+    const { name, value } = event.target;
+    setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
+  }
+
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    console.log("Submitting");
+  }
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" || event.key === "Tab") {
@@ -62,56 +81,69 @@ export default function CreateSummarizer() {
             </span>
           </div>
         </div>
-        <Input
-          id="name"
-          type="text"
-          label="Name"
-          placeholder="Summarizer name"
-        />
-        <div className="flex flex-col gap-y-3">
+        <form>
           <Input
-            id="recipients"
-            type="email"
-            label="Recipients"
-            placeholder="Enter an email address"
-            onKeyDown={handleKeyPress}
+            id="name"
+            name="name"
+            type="text"
+            label="Name"
+            placeholder="Summarizer name"
+            onChange={handleChange}
           />
-          <div className="flex flex-wrap items-center gap-2">
-            {recipients.map((recipient, index) => (
-              <button
-                className="flex items-center bg-gray-50 px-1.5 py-1 border border-gray-200 hover:bg-gray-100 rounded-md shadow-sm"
-                onClick={() =>
-                  setRecipients(recipients.filter((_, i) => i !== index))
-                }
-              >
-                <span key={index} className="text-gray-500 text-sm">
-                  {recipient}
-                </span>
-                <X className="text-gray-600 size-4 ml-0.5" />
-              </button>
-            ))}
+          <div className="flex flex-col gap-y-3">
+            <Input
+              id="recipients"
+              name="recipients"
+              type="email"
+              label="Recipients"
+              placeholder="Enter an email address"
+              onChange={handleChange}
+              onKeyDown={handleKeyPress}
+            />
+            <div className="flex flex-wrap items-center gap-2">
+              {recipients.map((recipient, index) => (
+                <button
+                  className="flex items-center bg-gray-50 px-1.5 py-1 border border-gray-200 hover:bg-gray-100 rounded-md shadow-sm"
+                  onClick={() =>
+                    setRecipients(recipients.filter((_, i) => i !== index))
+                  }
+                >
+                  <span key={index} className="text-gray-500 text-sm">
+                    {recipient}
+                  </span>
+                  <X className="text-gray-600 size-4 ml-0.5" />
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
-        <Checkbox
-          id="prior_reports"
-          name="prior_reports"
-          label="Use prior reports"
-          description="Use prior reports as context to inform the summarizer."
-        />
-        <Checkbox
-          id="attach_original"
-          name="attach_original"
-          label="Attach original report"
-          description="Attach the original report PDF to the email to recipients."
-        />
-        <TextArea id="custom" label="Custom Instructions" />
-        <TestSummaryButton />
-        <div className="flex justify-end gap-x-4">
-          <Button href="/" variant="secondary">
-            Cancel
-          </Button>
-          <Button>Create</Button>
-        </div>
+          <Checkbox
+            id="prior_reports"
+            name="usePriorReports"
+            label="Use prior reports"
+            description="Use prior reports as context to inform the summarizer."
+            onChange={handleChange}
+          />
+          <Checkbox
+            id="attach_original"
+            name="attachOriginal"
+            label="Attach original report"
+            description="Attach the original report PDF to the email to recipients."
+            onChange={handleChange}
+          />
+          <TextArea
+            id="custom"
+            name="customInstructions"
+            label="Custom Instructions"
+            onChange={handleChange}
+          />
+          <TestSummaryButton />
+          <div className="flex justify-end gap-x-4">
+            <Button href="/" variant="secondary">
+              Cancel
+            </Button>
+            <Button type="submit">Create</Button>
+          </div>
+        </form>
       </div>
     </div>
   );
