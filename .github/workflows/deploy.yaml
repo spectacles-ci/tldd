@@ -29,14 +29,17 @@ jobs:
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Install dependencies
+        working-directory: ./backend
         run: |
           poetry install --no-root
 
       - name: Run Ruff
+        working-directory: ./backend
         run: |
           poetry run ruff check src/
 
       - name: Run Mypy
+        working-directory: ./backend
         run: |
           poetry run mypy src/
 
@@ -54,16 +57,18 @@ jobs:
 
       - name: Setup Google Application Credentials
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
+          SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SA_KEY }}
         run: |
           mkdir -p tmp
-          echo $GOOGLE_APPLICATION_CREDENTIALS > tmp/terraform_cred_config.json
+          echo $SERVICE_ACCOUNT_KEY > tmp/keys/google_application_credentials.json
 
       - name: Build and push Docker image
+        working-directory: ./backend
         env:
           IMAGE_NAME: us-central1-docker.pkg.dev/vertex-dashboards/vertex-dashboards/vertex-dashboards:${{ github.sha }}
+          SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SA_KEY }}
         run: |
-          docker build -t $IMAGE_NAME . --platform linux/amd64
+          docker build -t $IMAGE_NAME . --platform linux/amd64 --build-arg SERVICE_ACCOUNT_KEY=$SERVICE_ACCOUNT_KEY
           docker push $IMAGE_NAME
 
       - name: Setup Terraform
@@ -71,13 +76,26 @@ jobs:
 
       - name: Initialize Terraform
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: ../tmp/terraform_cred_config.json
+          GOOGLE_APPLICATION_CREDENTIALS: ../tmp/keys/google_application_credentials.json
         working-directory: ./terraform
         run: terraform init
 
       - name: Apply Terraform
         working-directory: ./terraform
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: ../tmp/terraform_cred_config.json
+          GOOGLE_APPLICATION_CREDENTIALS: ../tmp/keys/google_application_credentials.json
           TF_VAR_run_hash: ${{ github.sha }}
         run: terraform apply -auto-approve
+
+      - name: Install frontend dependencies
+        working-directory: ./frontend
+        run: yarn install
+
+      - name: Build frontend
+        working-directory: ./frontend
+        run: yarn build
+
+      - name: Push build to GCS
+        working-directory: ./frontend
+        run: |
+          gsutil -m cp -r dist/bundle.js gs://tldd-frontend/bundle.js
