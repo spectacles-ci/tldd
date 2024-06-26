@@ -19,9 +19,20 @@ export type SummarizerFormState = Summarizer & {
     recipient: string;
 };
 
+export type Receipt = {
+    timestamp: string;
+    summarizer_id: string;
+    report_location: string;
+};
+
 export type SummarizerRow = {
     id: string;
     name: string;
     last_receipt_timestamp?: string;
     recipients: string[];
+};
+
+export type SummaryRequest = {
+    summarizer: Summarizer;
+    receipt: Receipt;
 };
