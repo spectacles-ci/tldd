@@ -22,12 +22,6 @@ export default function CreateSummarizer() {
         getAttribute();
     }, [lookerExtension]);
 
-    const copyToClipboard = () => {
-        navigator.clipboard.writeText(webhookUrl);
-        setIsCopied(true);
-        setTimeout(() => setIsCopied(false), 2000);
-    };
-
     const {
         register,
         handleSubmit,
@@ -44,6 +38,11 @@ export default function CreateSummarizer() {
             customInstructions: null,
         },
     });
+    const copyToClipboard = async () => {
+        await lookerExtension.extensionSDK.clipboardWrite(webhookUrl);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000);
+    };
 
     const recipients = watch("recipients");
 
