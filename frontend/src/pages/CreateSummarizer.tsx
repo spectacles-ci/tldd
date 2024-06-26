@@ -39,7 +39,7 @@ export default function CreateSummarizer() {
             recipient: "",
             recipients: [],
             usePriorReports: true,
-            attachPdf: true,
+            attachOriginal: true,
             customInstructions: null,
         },
     });
