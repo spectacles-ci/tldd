@@ -10,6 +10,6 @@ export type Summarizer = {
 export type SummarizerRow = {
   id: string;
   name: string;
-  lastReceived: string;
+  last_receipt_timestamp?: string;
   recipients: string[];
 };
