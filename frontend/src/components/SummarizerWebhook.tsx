@@ -6,14 +6,13 @@ import clsx from "clsx";
 import { Clipboard } from "./icons";
 
 export function SummarizerWebhook({
-    webhookUrl,
-    setWebhookUrl,
+    setApiUrl,
     summarizerId,
 }: {
-    webhookUrl: string;
-    setWebhookUrl: Dispatch<SetStateAction<string>>;
+    setApiUrl: Dispatch<SetStateAction<string>>;
     summarizerId: string;
 }) {
+    const [webhookUrl, setWebhookUrl] = useState<string>("");
     const [isCopied, setIsCopied] = useState<boolean>(false);
 
     const extensionContext = useContext(ExtensionContext);
@@ -23,6 +22,7 @@ export function SummarizerWebhook({
         const attribute = await extensionSDK.userAttributeGetItem("tldd_api");
         const apiUrl = attribute ?? "";
         setWebhookUrl(`${apiUrl}/webhook/${summarizerId}`);
+        setApiUrl(apiUrl);
     }, [summarizerId, extensionSDK]);
 
     useEffect(() => {
