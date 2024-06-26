@@ -14,7 +14,7 @@ export default function SummarizerTable({
   }
 
   return (
-    <table className="w-full rounded border-separate border-spacing-0 border border-gray-200 shadow">
+    <table className="w-full rounded border-separate border-spacing-0 outline outline-gray-200 shadow">
       <thead className="bg-gray-100 text-left text-gray-700 text-sm font-semibold border-b border-gray-200">
         <tr>
           <th className="px-6 py-3 w-full">Name</th>
