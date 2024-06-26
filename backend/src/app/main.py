@@ -58,16 +58,14 @@ async def healthcheck() -> dict[str, Any]:
 
 
 @app.post("/summarizer/{summarizer_id}")
-async def create_summarizer(summarizer_id: str, summarizer: Summarizer) -> None:
+async def create_summarizer(summarizer: Summarizer) -> None:
     """Endpoint to create a summarizer."""
     summarizer_dict = summarizer.model_dump()
-    if summarizer_id != summarizer.id:
-        raise ValueError("Summarizer ID does not match the provided ID.")
-    firestore_client.collection("summarizers").document(summarizer_id).set(
+    firestore_client.collection("summarizers").document(summarizer.id).set(
         summarizer_dict
     )
     logger.info(
-        f"Summarizer {summarizer_id} has been created and written to Firestore."
+        f"Summarizer {summarizer.id} has been created and written to Firestore."
     )
 
 
