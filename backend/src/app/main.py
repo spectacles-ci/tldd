@@ -9,6 +9,7 @@ from typing import Any
 import resend
 import vertexai
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from google.cloud.firestore import Client as FirestoreClient
 from google.cloud.logging import Client as LoggingClient
 from google.cloud.storage import Client as StorageClient
@@ -25,7 +26,17 @@ from app.models import (
 PROJECT_ID = "vertex-dashboards"
 K_SERVICE = os.getenv("K_SERVICE")
 
+
 app = FastAPI()
+
+# Set CORS to allow requests from all websites
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 if K_SERVICE and K_SERVICE != "dev":
     # Initialize Google Cloud Logging
