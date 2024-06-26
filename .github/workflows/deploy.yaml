@@ -59,7 +59,7 @@ jobs:
         env:
           SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SA_KEY }}
         run: |
-          mkdir -p tmp
+          mkdir -p tmp/keys
           echo $SERVICE_ACCOUNT_KEY > tmp/keys/google_application_credentials.json
 
       - name: Build and push Docker image
@@ -98,4 +98,4 @@ jobs:
       - name: Push build to GCS
         working-directory: ./frontend
         run: |
-          gsutil -m cp -r dist/bundle.js gs://tldd-frontend/bundle.js
+          gsutil -m cp -r dist/bundle.js gs://tldd-frontend/
