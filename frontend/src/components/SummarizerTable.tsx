@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import Button from "./Button";
 import type { SummarizerRow } from "../types";
 import { intlFormatDistance } from "date-fns";
@@ -10,6 +11,7 @@ export default function SummarizerTable({
 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const history = useHistory();
 
   const totalPages = Math.ceil(summarizers.length / itemsPerPage);
 
@@ -29,6 +31,10 @@ export default function SummarizerTable({
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentItems = summarizers.slice(startIndex, startIndex + itemsPerPage);
 
+  const handleRowClick = (id: string) => {
+    history.push(`/edit/${id}`);
+  };
+
   return (
     <table className="w-full rounded border-separate border-spacing-0 outline outline-gray-200 shadow">
       <thead className="bg-gray-100 text-left text-gray-700 text-sm font-semibold border-b border-gray-200">
@@ -40,7 +46,11 @@ export default function SummarizerTable({
       </thead>
       <tbody className="text-sm text-gray-700">
         {currentItems.map((summarizer) => (
-          <tr className="hover:bg-blue-50" key={summarizer.id}>
+          <tr
+            className="hover:bg-blue-50 cursor-pointer"
+            key={summarizer.id}
+            onClick={() => handleRowClick(summarizer.id)}
+          >
             <td className="px-6 py-4 w-full text-gray-950 border-b border-gray-200">
               {summarizer.name}
             </td>
