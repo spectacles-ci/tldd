@@ -1,6 +1,7 @@
-import { intlFormatDistance } from "date-fns";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
+
+import { intlFormatDistance } from "date-fns";
 
 import type { SummarizerRow } from "../types";
 import Button from "./Button";

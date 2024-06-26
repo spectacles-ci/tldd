@@ -1,6 +1,7 @@
-import clsx from "clsx";
 import React from "react";
 import { useHistory } from "react-router-dom";
+
+import clsx from "clsx";
 
 export default function Button({
     children,

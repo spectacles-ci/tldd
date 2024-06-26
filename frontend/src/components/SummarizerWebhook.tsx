@@ -1,9 +1,10 @@
-import { ExtensionContext } from "@looker/extension-sdk-react";
-import clsx from "clsx";
 import React, { Dispatch, SetStateAction, useCallback, useContext, useEffect, useState } from "react";
+
+import clsx from "clsx";
 
 import { useApiUrl } from "../context/ApiContext";
 import { Clipboard } from "./icons";
+import { ExtensionContext } from "@looker/extension-sdk-react";
 
 export function SummarizerWebhook({ summarizerId }: { summarizerId: string }) {
     const [webhookUrl, setWebhookUrl] = useState<string>("");

@@ -1,10 +1,11 @@
-import { ExtensionContext } from "@looker/extension-sdk-react";
-import { useQuery } from "@tanstack/react-query";
-import { intlFormatDistance } from "date-fns";
 import React, { useContext, useEffect, useState } from "react";
+
+import { intlFormatDistance } from "date-fns";
 
 import Button from "./Button";
 import { CheckCircle } from "./icons";
+import { ExtensionContext } from "@looker/extension-sdk-react";
+import { useQuery } from "@tanstack/react-query";
 
 export default function TestSummaryButton({ summarizerId }: { summarizerId: string }) {
     const [apiUrl, setApiUrl] = useState<string>("");
