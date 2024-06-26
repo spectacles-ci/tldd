@@ -91,7 +91,7 @@ export default function CreateSummarizer() {
                             {...register("recipients")}
                         />
                         <div className="flex flex-wrap items-center gap-2">
-                            {recipients.map((recipient, index) => (
+                            {recipients?.map((recipient, index) => (
                                 <button
                                     className="flex items-center bg-gray-50 px-1.5 py-1 border border-gray-200 hover:bg-gray-100 rounded-md shadow-sm"
                                     onClick={() =>
