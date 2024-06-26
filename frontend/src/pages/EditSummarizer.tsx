@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { ApiSummarizer, Summarizer } from "../types";
+import { SummarizerData, Summarizer } from "../types";
 import { useParams } from "react-router-dom";
 import { useApiUrl } from "../context/ApiContext";
 import EditSummarizerForm from "../components/EditSummarizerForm";
@@ -14,7 +14,7 @@ export default function EditSummarizer() {
     useEffect(() => {
         const fetchSummarizer = async () => {
             const response = await fetch(`${apiUrl}/summarizer/${id}`);
-            const data = (await response.json()) as ApiSummarizer;
+            const data = (await response.json()) as SummarizerData;
             const transformedData = Object.keys(data).reduce((acc, key) => {
                 const newKey = key.replace(/_(\w)/g, (match, p1) => p1.toUpperCase());
                 // @ts-ignore
