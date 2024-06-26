@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { useHistory } from "react-router-dom";
 
-import type { Summarizer, SummarizerFormState } from "../types";
-import { SubmitHandler, useForm } from "react-hook-form";
+import type { SummarizerFormState } from "../types";
 import { SummarizerForm } from "../components/SummarizerForm";
 import { SummarizerWebhook } from "../components/SummarizerWebhook";
-import { useApiUrl } from "../context/ApiContext";
-import { useHistory } from "react-router-dom";
 
 function generateShortUUID(): string {
     const numberOfChars = 8;
@@ -28,10 +27,6 @@ function generateShortUUID(): string {
 }
 
 export default function CreateSummarizer() {
-    const [isLoading, setLoading] = useState<boolean>(false);
-    const history = useHistory();
-    const apiUrl = useApiUrl();
-
     const form = useForm<SummarizerFormState>({
         defaultValues: {
             id: generateShortUUID(),
@@ -44,7 +39,7 @@ export default function CreateSummarizer() {
         },
     });
 
-    const { watch, setError } = form;
+    const { watch } = form;
 
     const summarizerId = watch("id");
 
@@ -53,7 +48,22 @@ export default function CreateSummarizer() {
             <div className="max-w-3xl flex flex-col gap-y-6">
                 <h1 className="text-xl text-gray-950">Create a Summarizer</h1>
                 <SummarizerWebhook summarizerId={summarizerId} />
-                <SummarizerForm form={form} summarizerId={summarizerId} actionText="Create" />
+                <SummarizerForm
+                    form={form}
+                    summarizerId={summarizerId}
+                    actions={[
+                        {
+                            text: "Cancel",
+                            href: "/",
+                            variant: "secondary",
+                        },
+                        {
+                            text: "Create",
+                            variant: "primary",
+                            type: "submit",
+                        },
+                    ]}
+                />
             </div>
         </div>
     );
