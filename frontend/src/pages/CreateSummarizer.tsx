@@ -2,9 +2,9 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 
-import type { SummarizerFormState } from "../types";
 import { SummarizerForm } from "../components/SummarizerForm";
 import { SummarizerWebhook } from "../components/SummarizerWebhook";
+import type { SummarizerFormState } from "../types";
 
 function generateShortUUID(): string {
     const numberOfChars = 8;

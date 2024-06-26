@@ -1,10 +1,9 @@
-import React, { Dispatch, SetStateAction, useCallback, useContext, useEffect, useState } from "react";
-
 import { ExtensionContext } from "@looker/extension-sdk-react";
 import clsx from "clsx";
+import React, { Dispatch, SetStateAction, useCallback, useContext, useEffect, useState } from "react";
 
-import { Clipboard } from "./icons";
 import { useApiUrl } from "../context/ApiContext";
+import { Clipboard } from "./icons";
 
 export function SummarizerWebhook({ summarizerId }: { summarizerId: string }) {
     const [webhookUrl, setWebhookUrl] = useState<string>("");
@@ -47,7 +46,7 @@ export function SummarizerWebhook({ summarizerId }: { summarizerId: string }) {
                                 {
                                     "border-primary": isCopied,
                                     "border-gray-200": !isCopied,
-                                }
+                                },
                             )}
                             onClick={copyToClipboard}
                         >
