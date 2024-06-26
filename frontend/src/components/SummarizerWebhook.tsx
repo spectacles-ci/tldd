@@ -4,16 +4,13 @@ import { ExtensionContext } from "@looker/extension-sdk-react";
 import clsx from "clsx";
 
 import { Clipboard } from "./icons";
+import { useApiUrl } from "../context/ApiContext";
 
-export function SummarizerWebhook({
-    setApiUrl,
-    summarizerId,
-}: {
-    setApiUrl: Dispatch<SetStateAction<string>>;
-    summarizerId: string;
-}) {
+export function SummarizerWebhook({ summarizerId }: { summarizerId: string }) {
     const [webhookUrl, setWebhookUrl] = useState<string>("");
     const [isCopied, setIsCopied] = useState<boolean>(false);
+
+    const apiUrl = useApiUrl();
 
     const extensionContext = useContext(ExtensionContext);
     const { extensionSDK } = extensionContext;
@@ -22,8 +19,7 @@ export function SummarizerWebhook({
         const attribute = await extensionSDK.userAttributeGetItem("tldd_api");
         const apiUrl = attribute ?? "";
         setWebhookUrl(`${apiUrl}/webhook/${summarizerId}`);
-        setApiUrl(apiUrl);
-    }, [summarizerId, extensionSDK]);
+    }, [apiUrl, summarizerId, extensionSDK]);
 
     useEffect(() => {
         getAttribute();
@@ -50,7 +46,7 @@ export function SummarizerWebhook({
                             {
                                 "border-primary": isCopied,
                                 "border-gray-200": !isCopied,
-                            },
+                            }
                         )}
                         onClick={copyToClipboard}
                     >
