@@ -1,11 +1,11 @@
 import React, { useCallback } from "react";
 import { useForm } from "react-hook-form";
-
-import { Summarizer, SummarizerFormState } from "../types";
-import { SummarizerWebhook } from "../components/SummarizerWebhook";
-import { SummarizerForm } from "../components/SummarizerForm";
-import { useApiUrl } from "../context/ApiContext";
 import { useHistory } from "react-router-dom";
+
+import { SummarizerForm } from "../components/SummarizerForm";
+import { SummarizerWebhook } from "../components/SummarizerWebhook";
+import { useApiUrl } from "../context/ApiContext";
+import { Summarizer, SummarizerFormState } from "../types";
 
 export default function EditSummarizerForm({ summarizer }: { summarizer: Summarizer }) {
     const history = useHistory();

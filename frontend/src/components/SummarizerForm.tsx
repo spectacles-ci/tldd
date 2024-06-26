@@ -1,15 +1,15 @@
 import React, { useCallback, useState } from "react";
-
 import { SubmitHandler, UseFormReturn } from "react-hook-form";
+import { useHistory } from "react-router-dom";
+
+import { useApiUrl } from "../context/ApiContext";
+import { Summarizer, SummarizerFormState } from "../types";
 import Button from "./Button";
 import Checkbox from "./Checkbox";
 import Input from "./Input";
 import TestSummaryButton from "./TestSummaryButton";
 import TextArea from "./TextArea";
-import { Summarizer, SummarizerFormState } from "../types";
 import { X } from "./icons";
-import { useApiUrl } from "../context/ApiContext";
-import { useHistory } from "react-router-dom";
 
 export function SummarizerForm({
     form,
