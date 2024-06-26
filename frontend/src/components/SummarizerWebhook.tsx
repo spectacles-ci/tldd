@@ -38,26 +38,30 @@ export function SummarizerWebhook({ summarizerId }: { summarizerId: string }) {
                 Create a schedule in Looker with the <span className="font-medium">Webhook</span> destination and
                 provide the URL below.
             </p>
-            {webhookUrl && (
-                <div className="flex items-center">
-                    <button
-                        className={clsx(
-                            "bg-white border transition-colors duration-300 hover:bg-gray-50  text-gray-400 rounded shadow-sm text-sm px-2 py-1.5 flex items-center gap-x-1.5",
-                            {
-                                "border-primary": isCopied,
-                                "border-gray-200": !isCopied,
-                            }
-                        )}
-                        onClick={copyToClipboard}
-                    >
-                        <span>{webhookUrl}</span>
-                        <Clipboard className="size-4 text-primary" />
-                    </button>
-                    <span className="ml-2 text-xs text-gray-400">
-                        {isCopied ? "Copied to clipboard!" : "Click to copy"}
-                    </span>
-                </div>
-            )}
+            <div className="flex items-center">
+                {webhookUrl ? (
+                    <>
+                        <button
+                            className={clsx(
+                                "bg-white border transition-colors duration-300 hover:bg-gray-50  text-gray-400 rounded shadow-sm text-sm px-2 py-1.5 flex items-center gap-x-1.5",
+                                {
+                                    "border-primary": isCopied,
+                                    "border-gray-200": !isCopied,
+                                }
+                            )}
+                            onClick={copyToClipboard}
+                        >
+                            <span>{webhookUrl}</span>
+                            <Clipboard className="size-4 text-primary" />
+                        </button>
+                        <span className="ml-2 text-xs text-gray-400">
+                            {isCopied ? "Copied to clipboard!" : "Click to copy"}
+                        </span>
+                    </>
+                ) : (
+                    <span className="bg-white border transition-colors duration-300 hover:bg-gray-50 w-[516px] h-[34px] text-gray-400 rounded shadow-sm text-sm px-2 py-1.5 flex items-center gap-x-1.5 border-gray-200" />
+                )}
+            </div>
         </div>
     );
 }
