@@ -101,4 +101,6 @@ jobs:
           GOOGLE_APPLICATION_CREDENTIALS: ../tmp/keys/google_application_credentials.json
         run: |
           gcloud auth activate-service-account --key-file=../tmp/keys/google_application_credentials.json
-          gsutil -m cp -r dist/bundle.js gs://tldd-frontend/ && gsutil acl ch -u AllUsers:R gs://tldd-frontend/bundle.js
+          gsutil -m cp -r dist/bundle.js gs://tldd-frontend/
+          gsutil acl ch -u AllUsers:R gs://tldd-frontend/bundle.js
+          gsutil cors set cors-config.json gs://tldd-frontend
