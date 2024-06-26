@@ -1,21 +1,10 @@
-import React, { useState, useContext, useEffect } from "react";
-import { ExtensionContext } from "@looker/extension-sdk-react";
+import React from "react";
 import { Button, SummarizerTable } from "../components";
 import { useQuery } from "@tanstack/react-query";
+import { useApiUrl } from "../context/ApiContext";
 
 export default function ListSummarizers() {
-    const [apiUrl, setApiUrl] = useState<string>("");
-
-    const lookerExtension = useContext(ExtensionContext);
-
-    const getAttribute = async () => {
-        const attribute = await lookerExtension.extensionSDK.userAttributeGetItem("tldd_api");
-        setApiUrl(attribute ?? "");
-    };
-
-    useEffect(() => {
-        getAttribute();
-    }, [lookerExtension]);
+    const apiUrl = useApiUrl();
 
     const query = useQuery({
         queryKey: ["summarizers"],
