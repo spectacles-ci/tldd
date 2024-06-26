@@ -5,12 +5,13 @@ export default function Checkbox({
   id,
   name,
   description,
+  ...props
 }: {
   label: string;
   id: string;
   name: string;
   description: string;
-}) {
+} & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <div className="relative flex items-start">
       <div className="flex h-6 items-center">
@@ -20,6 +21,7 @@ export default function Checkbox({
           name={name}
           type="checkbox"
           className="h-4 w-4 rounded border-gray-200 text-primary focus:ring-primary"
+          {...props}
           defaultChecked
         />
       </div>
