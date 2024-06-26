@@ -77,7 +77,8 @@ async def get_summarizer(summarizer_id: str) -> dict[str, Any]:
     )
     summarizer_dict = summarizer.to_dict()
     last_receipt = await get_last_receipt(summarizer_id)
-    summarizer_dict["last_receipt_timestamp"] = last_receipt["timestamp"]
+    if last_receipt:
+        summarizer_dict["last_receipt_timestamp"] = last_receipt["timestamp"]
     return summarizer_dict  # type: ignore[no-any-return]
 
 
@@ -89,7 +90,8 @@ async def list_summarizers() -> list[dict[str, Any]]:
     for summarizer in summarizers:
         last_receipt = await get_last_receipt(summarizer.id)
         summarizer_dict = summarizer.to_dict()
-        summarizer_dict["last_receipt_timestamp"] = last_receipt["timestamp"]
+        if last_receipt:
+            summarizer_dict["last_receipt_timestamp"] = last_receipt["timestamp"]
         response.append(summarizer_dict)
     return response
 
@@ -137,7 +139,7 @@ async def summarise(data: SummaryRequest) -> dict[str, Any]:
 
 
 @app.get("/summarizer/{summarizer_id}/receipt")
-async def get_last_receipt(summarizer_id: str) -> dict[str, Any]:
+async def get_last_receipt(summarizer_id: str) -> dict[str, Any] | None:
     """Endpoint to get the last receipt."""
     receipt_doc = (
         firestore_client.collection("receipts")
@@ -146,7 +148,10 @@ async def get_last_receipt(summarizer_id: str) -> dict[str, Any]:
         .limit(1)
         .get()
     )
-    return receipt_doc[0].to_dict()  # type: ignore[no-any-return]
+    try:
+        return receipt_doc[0].to_dict()  # type: ignore[no-any-return]
+    except IndexError:
+        return None
 
 
 @app.post("/webhook/{summarizer_id}")
