@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { ExtensionContext } from "@looker/extension-sdk-react";
 import {
   Input,
   Button,
@@ -11,6 +12,8 @@ import { Clipboard, X } from "../components/icons";
 import type { Summarizer } from "../types";
 
 export default function CreateSummarizer() {
+  const extensionContext = useContext(ExtensionContext);
+  const { extensionSDK } = extensionContext;
   const [formData, setFormData] = useState<Summarizer>({
     id: "",
     name: "",
@@ -45,8 +48,8 @@ export default function CreateSummarizer() {
     }
   };
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(webhookUrl);
+  const copyToClipboard = async () => {
+    await extensionSDK.clipboardWrite(webhookUrl);
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), 2000);
   };
