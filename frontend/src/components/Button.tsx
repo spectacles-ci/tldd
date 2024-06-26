@@ -8,12 +8,14 @@ export default function Button({
     href,
     variant = "primary",
     enabled = true,
+    type = "button",
 }: {
     children: React.ReactNode;
     onClick?: () => void;
     href?: string;
     variant?: "primary" | "secondary";
     enabled?: boolean;
+    type?: "button" | "submit";
 }) {
     const history = useHistory();
     const resolvedVariant = enabled ? variant : "disabled";
@@ -28,7 +30,7 @@ export default function Button({
 
     return (
         <button
-            type="button"
+            type={type}
             onClick={() => {
                 if (href) {
                     history.push(href); // Ensure history.push is used correctly
