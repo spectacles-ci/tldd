@@ -54,7 +54,7 @@ export default function CreateSummarizer() {
                 acc[newKey] = postData[key as keyof Omit<Summarizer, "recipient">];
                 return acc;
             },
-            {}
+            {},
         );
         await fetch(`${apiUrl}/summarizer/`, {
             method: "POST",
@@ -73,7 +73,7 @@ export default function CreateSummarizer() {
         <div className="container mt-8 mx-auto px-4 mb-8">
             <div className="max-w-3xl flex flex-col gap-y-6">
                 <h1 className="text-xl text-gray-950">Create a Summarizer</h1>
-                <SummarizerWebhook  setApiUrl={setApiUrl} summarizerId={summarizerId} />
+                <SummarizerWebhook setApiUrl={setApiUrl} summarizerId={summarizerId} />
                 <SummarizerForm form={form} isLoading={isLoading} onSubmit={onSubmit} summarizerId={summarizerId} />
             </div>
         </div>
