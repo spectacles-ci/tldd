@@ -14,14 +14,14 @@
  * HelloWorld makes a simple call to the Looker API using the Extension Framework's built in authentication,
  * and returns the logged in user.
  */
-import { ExtensionProvider } from "@looker/extension-sdk-react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React from "react";
 import { hot } from "react-hot-loader/root";
 import { Route, Switch } from "react-router-dom";
 
 import { ApiProvider } from "./context/ApiContext";
 import { CreateSummarizer, EditSummarizer, ListSummarizers } from "./pages";
+import { ExtensionProvider } from "@looker/extension-sdk-react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const queryClient = new QueryClient();
 export const App = hot(() => (

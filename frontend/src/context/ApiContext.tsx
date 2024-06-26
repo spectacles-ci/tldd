@@ -1,7 +1,7 @@
-import { ExtensionContext } from "@looker/extension-sdk-react";
 import React, { ReactNode, createContext, useContext, useEffect, useState } from "react";
 
 import useVerifyContext from "../hooks/useVerifyContext";
+import { ExtensionContext } from "@looker/extension-sdk-react";
 
 const ApiContext = createContext<string | undefined>("");
 

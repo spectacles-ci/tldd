@@ -1,6 +1,5 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useHistory } from "react-router-dom";
 
 import { SummarizerForm } from "../components/SummarizerForm";
 import { SummarizerWebhook } from "../components/SummarizerWebhook";

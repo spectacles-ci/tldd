@@ -1,8 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
 import React from "react";
 
 import { Button, SummarizerTable } from "../components";
 import { useApiUrl } from "../context/ApiContext";
+import { useQuery } from "@tanstack/react-query";
 
 export default function ListSummarizers() {
     const apiUrl = useApiUrl();
