@@ -33,6 +33,6 @@ export type SummarizerRow = {
 };
 
 export type SummaryRequest = {
-    summarizer: Summarizer;
+    summarizer: SummarizerData;
     receipt: Receipt;
 };
