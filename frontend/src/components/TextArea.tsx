@@ -1,5 +1,6 @@
 import React from "react";
 import { UseFormRegister } from "react-hook-form";
+
 import { SummarizerFormState } from "../types";
 
 export default function TextArea({

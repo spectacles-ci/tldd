@@ -1,6 +1,7 @@
-import React from "react";
-import { Button, SummarizerTable } from "../components";
 import { useQuery } from "@tanstack/react-query";
+import React from "react";
+
+import { Button, SummarizerTable } from "../components";
 import { useApiUrl } from "../context/ApiContext";
 
 export default function ListSummarizers() {

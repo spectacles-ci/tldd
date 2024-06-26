@@ -1,8 +1,9 @@
+import { intlFormatDistance } from "date-fns";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import Button from "./Button";
+
 import type { SummarizerRow } from "../types";
-import { intlFormatDistance } from "date-fns";
+import Button from "./Button";
 
 export default function SummarizerTable({ summarizers }: { summarizers: SummarizerRow[] }) {
     const [currentPage, setCurrentPage] = useState(1);
