@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { ExtensionContext } from "@looker/extension-sdk-react";
 import {
   Input,
@@ -11,9 +11,43 @@ import clsx from "clsx";
 import { Clipboard, X } from "../components/icons";
 import type { Summarizer } from "../types";
 
+function generateShortUUID(): string {
+  const numberOfChars = 8;
+  const characters = "0123456789abcdefghijklmnopqrstuvwxyz";
+  const base = characters.length;
+  let number = Math.floor(Math.random() * Math.pow(base, numberOfChars)); // Generates a number between 0 and base^8 - 1
+  let shortUUID = "";
+
+  while (number > 0) {
+    shortUUID = characters[number % base] + shortUUID;
+    number = Math.floor(number / base);
+  }
+
+  // Ensure the length is consistent
+  while (shortUUID.length < numberOfChars) {
+    shortUUID = "0" + shortUUID;
+  }
+
+  return shortUUID;
+}
+
 export default function CreateSummarizer() {
   const extensionContext = useContext(ExtensionContext);
   const { extensionSDK } = extensionContext;
+  const [apiUrl, setApiUrl] = useState<string>("");
+
+  const getAttribute = async () => {
+    const attribute = await extensionSDK.userAttributeGetItem("tldd_api");
+    const apiUrl = attribute ?? "";
+    setApiUrl(apiUrl);
+    setWebhookUrl(`${apiUrl}/webhook/${summarizerId}`);
+  };
+
+  useEffect(() => {
+    getAttribute();
+  }, [extensionSDK]);
+
+  const [summarizerId, setSummarizerId] = useState<string>(generateShortUUID());
   const [formData, setFormData] = useState<Summarizer>({
     id: "",
     name: "",
@@ -23,9 +57,7 @@ export default function CreateSummarizer() {
     customInstructions: null,
   });
   const [recipients, setRecipients] = useState<string[]>([]);
-  const [webhookUrl, setWebhookUrl] = useState<string>(
-    "https://aed42f-summarize.run.app/a294cd29dfa322"
-  );
+  const [webhookUrl, setWebhookUrl] = useState<string>("");
   const [isCopied, setIsCopied] = useState<boolean>(false);
 
   function handleChange(event: React.ChangeEvent<HTMLElement>) {
@@ -139,7 +171,7 @@ export default function CreateSummarizer() {
             label="Custom Instructions"
             onChange={handleChange}
           />
-          <TestSummaryButton />
+          <TestSummaryButton summarizerId={summarizerId} />
           <div className="flex justify-end gap-x-4">
             <Button href="/" variant="secondary">
               Cancel
