@@ -4,10 +4,11 @@ import { ExtensionContext } from "@looker/extension-sdk-react";
 import { CheckCircle } from "./icons";
 import { useQuery } from "@tanstack/react-query";
 import { intlFormatDistance } from "date-fns";
+import type { Receipt, SummaryRequest } from "../types";
 
 export default function TestSummaryButton({ summarizerId }: { summarizerId: string }) {
     const [apiUrl, setApiUrl] = useState<string>("");
-    const [lastReceived, setLastReceived] = useState<string | null>(null);
+    const [lastReceipt, setLastReceipt] = useState<Receipt | null>(null);
 
     const extensionContext = useContext(ExtensionContext);
     const { extensionSDK } = extensionContext;
@@ -39,24 +40,47 @@ export default function TestSummaryButton({ summarizerId }: { summarizerId: stri
             onSuccess: (data) => {
                 if (data) {
                     console.log(`Received data: ${data}`);
-                    setLastReceived(intlFormatDistance(new Date(data.timestamp), new Date()));
+                    setLastReceipt(data as Receipt);
                 }
             },
             onError: (error) => {
                 console.error(error);
             },
-        },
+        }
     );
+
+    function generateTestSummary() {
+        const summaryRequest: SummaryRequest = {
+            summarizer: {
+                id: summarizerId,
+                name: "Test Summarizer",
+                recipients: [],
+                use_prior_reports: false,
+                attach_original: false,
+                custom_instructions: null,
+            },
+            receipt: lastReceipt,
+        };
+        fetch(`${apiUrl}/webhook/${summarizerId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(summaryRequest),
+        });
+    }
 
     return (
         <div className="flex items-center">
-            <Button variant="secondary" enabled={!!lastReceived}>
+            <Button variant="secondary" enabled={!!lastReceipt}>
                 Test Summary
             </Button>
-            {lastReceived ? (
-                <div className="ml-4 text-xs text-gray-500 flex items-center">
+            {lastReceipt ? (
+                <div className="flex items-center ml-4 text-xs text-gray-500">
                     <CheckCircle className="text-success size-5" />
-                    <p className="ml-1.5">Ready to test. Last received {lastReceived}.</p>
+                    <p className="ml-1.5">
+                        Ready to test. Last received {intlFormatDistance(new Date(lastReceipt.timestamp), new Date())}.
+                    </p>
                 </div>
             ) : (
                 <div className="ml-4 text-xs text-gray-500">
