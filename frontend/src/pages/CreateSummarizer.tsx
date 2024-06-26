@@ -1,11 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 
-import type { Summarizer, SummarizerFormState } from "../types";
-import { SubmitHandler, useForm } from "react-hook-form";
+import type { SummarizerFormState } from "../types";
+import { useForm } from "react-hook-form";
 import { SummarizerForm } from "../components/SummarizerForm";
 import { SummarizerWebhook } from "../components/SummarizerWebhook";
-import { useApiUrl } from "../context/ApiContext";
-import { useHistory } from "react-router-dom";
 
 function generateShortUUID(): string {
     const numberOfChars = 8;
@@ -28,10 +26,6 @@ function generateShortUUID(): string {
 }
 
 export default function CreateSummarizer() {
-    const [isLoading, setLoading] = useState<boolean>(false);
-    const history = useHistory();
-    const apiUrl = useApiUrl();
-
     const form = useForm<SummarizerFormState>({
         defaultValues: {
             id: generateShortUUID(),
@@ -39,7 +33,7 @@ export default function CreateSummarizer() {
             recipient: "",
             recipients: [],
             usePriorReports: true,
-            attachOriginal: true,
+            attachPdf: true,
             customInstructions: null,
         },
     });
@@ -49,8 +43,8 @@ export default function CreateSummarizer() {
     const summarizerId = watch("id");
 
     return (
-        <div className="container mt-8 mx-auto px-4 mb-8">
-            <div className="max-w-3xl flex flex-col gap-y-6">
+        <div className="container px-4 mx-auto mt-8 mb-8">
+            <div className="flex flex-col gap-y-6 max-w-3xl">
                 <h1 className="text-xl text-gray-950">Create a Summarizer</h1>
                 <SummarizerWebhook summarizerId={summarizerId} />
                 <SummarizerForm form={form} summarizerId={summarizerId} actionText="Create" />
