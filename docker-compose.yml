@@ -1,0 +1,17 @@
+services:
+  backend:
+    container_name: tldd-backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - PORT=8000
+      - K_SERVICE=dev
+      - K_CONFIGURATION=dev
+      - K_REVISION=dev-00001
+      - FIRESTORE_EMULATOR_HOST=host.docker.internal:8736
+      - GOOGLE_APPLICATION_CREDENTIALS=/tmp/keys/google_application_credentials.json
+    volumes:
+      - $GOOGLE_APPLICATION_CREDENTIALS:/tmp/keys/google_application_credentials.json:ro
+    ports:
+      - "8000:8000"
