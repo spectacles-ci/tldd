@@ -80,6 +80,7 @@ async def get_summarizer(summarizer_id: str) -> dict[str, Any]:
     last_receipt = await _get_last_receipt(summarizer_id)
     if last_receipt:
         summarizer_dict["last_receipt_timestamp"] = last_receipt["timestamp"]
+    logger.info(f"Summarizer {summarizer_id} has been retrieved from Firestore.")
     return summarizer_dict  # type: ignore[no-any-return]
 
 
@@ -94,6 +95,7 @@ async def list_summarizers() -> list[dict[str, Any]]:
         if last_receipt:
             summarizer_dict["last_receipt_timestamp"] = last_receipt["timestamp"]
         response.append(summarizer_dict)
+    logger.info("Summarizers have been retrieved from Firestore.")
     return response
 
 
@@ -101,6 +103,21 @@ async def list_summarizers() -> list[dict[str, Any]]:
 async def delete_summarizer(summarizer_id: str) -> None:
     """Endpoint to delete a summarizer."""
     firestore_client.collection("summarizers").document(summarizer_id).delete()
+    logger.info(f"Summarizer {summarizer_id} has been deleted from Firestore.")
+
+
+async def _get_prior_summary(summarizer_id: str) -> Summary | None:
+    """Get the last summary for a given summarizer_id."""
+    summaries = (
+        firestore_client.collection("summaries")
+        .where("summarizer_id", "==", summarizer_id)
+        .order_by("timestamp", direction="DESCENDING")
+        .limit(1)
+        .get()
+    )
+    if summaries:
+        return Summary(**summaries[0].to_dict())
+    return None
 
 
 @app.post("/summarizer/{summarizer_id}/summarize")
@@ -109,17 +126,53 @@ async def summarize(data: SummaryRequest) -> dict[str, Any]:
     summarizer = data.summarizer  # noqa: F841
     receipt = data.receipt
 
+    if summarizer.use_prior_reports:
+        prior_summary = await _get_prior_summary(summarizer.id)
+        if prior_summary:
+            if prior_summary:
+                prior_report_location = (
+                    f"gs://vertex-dashboards/{prior_summary.report_location}"
+                )
+                prior_report_pdf = Part.from_uri(
+                    prior_report_location, mime_type="application/pdf"
+                )
+
+    # Build the prompt
+    prompt = (
+        "You are the world's best data analyst. Generate the most useful report possible from the PDF, "
+        "highlighting key metrics and action-worthy insights. Summarise all the key metrics and findings from the report."
+        "The response you provide is going to be added to an email as-is. Please format your answer in a way that will make "
+        "a beautiful and easily readable email. It should be plain text, not HTML, but should use new lines where appropriate "
+        "and outline the information in an easy to read way."
+    )
+
+    if summarizer.use_prior_reports and prior_summary:
+        prompt += (
+            "\n\nThe prior PDF is included. It is the second PDF included. The first PDF is the current report. "
+            "Use the prior report to highlight changes and comparisons. You should highlight how metrics have changed "
+            "(or not changed) between the prior report and the current report. Only reference the prior report if it "
+            "is interesting and useful to do so. Prior report content: \n\n----Beginning of Prior Report----"
+            f"\n\n{prior_summary.body}\n\n----End of Prior Report----"
+        )
+
+    if summarizer.custom_instructions:
+        prompt += (
+            "\n\nThe recipient of the summary has provided custom instructions. "
+            "Factor these instructions into the report. The instructions are: \n\n"
+            f"----Beginning of Custom Instructions----\n\n{summarizer.custom_instructions}"
+            "\n\n----End of Custom Instructions----"
+        )
+
+    logger.info(f"Prompt: {prompt}")
+
     # Run the summarizer
     vertexai.init(project=PROJECT_ID, location="us-central1")
     model = GenerativeModel(model_name="gemini-1.5-pro-001")
-    # TODO: Prompt engineering and RAG
-    prompt = """
-        You are a very professional document summarization specialist.
-        Please summarize the given document.
-    """
     report_location = f"gs://vertex-dashboards/{receipt.report_location}"
     pdf_file = Part.from_uri(report_location, mime_type="application/pdf")
-    contents = [pdf_file, prompt]
+    contents = [prompt, pdf_file]
+    if summarizer.use_prior_reports and prior_summary:
+        contents.append(prior_report_pdf)
     response = model.generate_content(contents)
 
     # Save the Summary
@@ -216,22 +269,29 @@ async def receive_webhook(summarizer_id: str, webhook: DashboardWebhook) -> None
     )
 
     resend.api_key = os.getenv("RESEND_API_KEY")
-    attachment = resend.Attachment(filename="dashboard.pdf", content=attachment_data)
+    with open("src/app/email.html", "r") as file:
+        email_template = file.read()
+
+    email_template = email_template.replace("__body__", response["body"])
+
+    email_payload = {
+        "from": "hello@spectacles.dev",
+        "to": summarizer_config.recipients,
+        "subject": "Your Dashboard Has Been AI Analyzed!",
+        "html": email_template,
+    }
+    if summarizer_config.attach_pdf:
+        attachment = resend.Attachment(
+            filename="dashboard.pdf", content=attachment_data
+        )
+        email_payload["attachments"] = [attachment]
 
     with open("src/app/email.html", "r") as file:
         email_template = file.read()
 
     email_template = email_template.replace("__body__", response["body"])
 
-    resend.Emails.send(
-        {
-            "from": "hello@spectacles.dev",
-            "to": summarizer_config.recipients,
-            "subject": "Your Dashboard Has Been AI Analyzed!",
-            "html": email_template,
-            "attachments": [attachment],
-        }
-    )
+    resend.Emails.send(email_payload)
 
 
 def main() -> None:
