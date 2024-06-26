@@ -12,8 +12,6 @@ from fastapi import FastAPI
 from google.cloud.firestore import Client as FirestoreClient
 from google.cloud.logging import Client as LoggingClient
 from google.cloud.storage import Client as StorageClient
-from vertexai.generative_models import GenerativeModel, Part
-
 from vertex_dashboards.models import (
     DashboardWebhook,
     Receipt,
@@ -21,14 +19,17 @@ from vertex_dashboards.models import (
     Summary,
     SummaryRequest,
 )
+from vertexai.generative_models import GenerativeModel, Part
 
 PROJECT_ID = "vertex-dashboards"
+K_SERVICE = os.getenv("K_SERVICE")
 
 app = FastAPI()
 
-# Initialize Google Cloud Logging
-logging_client = LoggingClient()
-logging_client.setup_logging()
+if K_SERVICE and K_SERVICE != "dev":
+    # Initialize Google Cloud Logging
+    logging_client = LoggingClient(project=PROJECT_ID)
+    logging_client.setup_logging()
 
 # Configure the root logger
 logging.basicConfig(level=logging.INFO)
