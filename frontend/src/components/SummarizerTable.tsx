@@ -87,10 +87,10 @@ export default function SummarizerTable({
                 Showing {startIndex + 1} to {Math.min(startIndex + itemsPerPage, summarizers.length)} of {summarizers.length} results
               </span>
               <div className="flex gap-x-4">
-                <Button variant="secondary" onClick={handlePreviousPage} disabled={currentPage === 1}>
+                <Button variant="secondary" onClick={handlePreviousPage} enabled={currentPage !== 1}>
                   Previous
                 </Button>
-                <Button variant="secondary" onClick={handleNextPage} disabled={currentPage === totalPages}>
+                <Button variant="secondary" onClick={handleNextPage} enabled={currentPage !== totalPages}>
                   Next
                 </Button>
               </div>
