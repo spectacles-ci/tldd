@@ -5,21 +5,12 @@ import { useQuery } from "@tanstack/react-query";
 export default function ListSummarizers() {
   const query = useQuery({
     queryKey: ["summarizers"],
-    queryFn: () => {
-      return [
-        {
-          id: "1",
-          name: "Marketing Weekly",
-          lastReceived: "2024-06-24T12:00:00Z",
-          recipients: ["sherry@petgourmet.com", "john@doe.com", "jane@doe.com"],
-        },
-        {
-          id: "2",
-          name: "Financial Health QBR",
-          lastReceived: "2024-03-07T12:00:00Z",
-          recipients: ["juan.mendoza@petgourmet.com", "john@doe.com"],
-        },
-      ];
+    queryFn: async () => {
+      const response = await fetch("https://vertex-dashboards-2w54ohrt4q-uc.a.run.app/summarizer");
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
     },
   });
 
