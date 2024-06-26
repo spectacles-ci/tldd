@@ -23,9 +23,9 @@ export default function ListSummarizers() {
     });
 
     return (
-        <div className="container mt-8 mx-auto px-4">
-            <div className="flex mb-4 justify-between items-center">
-                <h1 className="text-xl mb-4 text-gray-950">Summarizers</h1>
+        <div className="container px-4 mx-auto mt-8">
+            <div className="flex justify-between items-center mb-4">
+                <h1 className="mb-4 text-xl text-gray-950">Summarizers</h1>
                 <Button href="/create">Create Summarizer</Button>
             </div>
             <SummarizerTable summarizers={query.data || []} />

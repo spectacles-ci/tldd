@@ -34,8 +34,8 @@ export default function SummarizerTable({ summarizers }: { summarizers: Summariz
     };
 
     return (
-        <table className="w-full rounded border-separate border-spacing-0 outline outline-gray-200 shadow">
-            <thead className="bg-gray-100 text-left text-gray-700 text-sm font-semibold border-b border-gray-200">
+        <table className="w-full rounded shadow border-separate border-spacing-0 outline outline-gray-200">
+            <thead className="text-sm font-semibold text-left text-gray-700 bg-gray-100 border-b border-gray-200">
                 <tr>
                     <th className="px-6 py-3 w-full">Name</th>
                     <th className="px-6 py-3 whitespace-nowrap">Last Received</th>
@@ -45,12 +45,12 @@ export default function SummarizerTable({ summarizers }: { summarizers: Summariz
             <tbody className="text-sm text-gray-700">
                 {currentItems.map((summarizer) => (
                     <tr
-                        className="hover:bg-blue-50 cursor-pointer"
+                        className="h-16 cursor-pointer hover:bg-blue-50"
                         key={summarizer.id}
                         onClick={() => handleRowClick(summarizer.id)}
                     >
-                        <td className="px-6 py-4 w-full text-gray-950 border-b border-gray-200">{summarizer.name}</td>
-                        <td className="px-6 py-4 border-b border-gray-200 whitespace-nowrap">
+                        <td className="px-6 w-full border-b border-gray-200 text-gray-950">{summarizer.name}</td>
+                        <td className="px-6 whitespace-nowrap border-b border-gray-200">
                             <div className="flex flex-col gap-y-1">
                                 <p>
                                     {summarizer.last_receipt_timestamp
@@ -69,12 +69,13 @@ export default function SummarizerTable({ summarizers }: { summarizers: Summariz
                                 )}
                             </div>
                         </td>
-                        <td className="px-6 py-4 border-b border-gray-200 whitespace-nowrap">
+                        <td className="px-6 whitespace-nowrap border-b border-gray-200">
                             <div className="flex flex-col gap-y-1">
                                 <p>{summarizer.recipients[0]}</p>
                                 {summarizer.recipients.length > 1 && (
                                     <p className="text-xs text-gray-500">
-                                        and {summarizer.recipients.length - 1} others
+                                        and {summarizer.recipients.length - 1}{" "}
+                                        {summarizer.recipients.length - 1 === 1 ? "other" : "others"}
                                     </p>
                                 )}
                             </div>
