@@ -204,12 +204,18 @@ async def receive_webhook(summarizer_id: str, webhook: DashboardWebhook) -> None
 
     resend.api_key = os.getenv("RESEND_API_KEY")
     attachment = resend.Attachment(filename="dashboard.pdf", content=attachment_data)
+
+    with open("src/app/email.html", "r") as file:
+        email_template = file.read()
+
+    email_template = email_template.replace("__body__", response["body"])
+
     resend.Emails.send(
         {
             "from": "hello@spectacles.dev",
             "to": summarizer_config.recipients,
             "subject": "Your Dashboard Has Been AI Analyzed!",
-            "html": f"<p>Here is the summary of your dashboard: {response['body']}</p>",
+            "html": email_template,
             "attachments": [attachment],
         }
     )
