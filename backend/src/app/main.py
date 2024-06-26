@@ -12,14 +12,15 @@ from fastapi import FastAPI
 from google.cloud.firestore import Client as FirestoreClient
 from google.cloud.logging import Client as LoggingClient
 from google.cloud.storage import Client as StorageClient
-from vertex_dashboards.models import (
+from vertexai.generative_models import GenerativeModel, Part
+
+from app.models import (
     DashboardWebhook,
     Receipt,
     Summarizer,
     Summary,
     SummaryRequest,
 )
-from vertexai.generative_models import GenerativeModel, Part
 
 PROJECT_ID = "vertex-dashboards"
 K_SERVICE = os.getenv("K_SERVICE")
