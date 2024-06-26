@@ -97,5 +97,7 @@ jobs:
 
       - name: Push build to GCS
         working-directory: ./frontend
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ../tmp/keys/google_application_credentials.json
         run: |
           gsutil -m cp -r dist/bundle.js gs://tldd-frontend/
