@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { Summarizer, SummarizerData } from "../types";
-import { useApiUrl } from "../context/ApiContext";
 import EditSummarizerForm from "../components/EditSummarizerForm";
+import { useApiUrl } from "../context/ApiContext";
+import { Summarizer, SummarizerData } from "../types";
 
 export default function EditSummarizer() {
     const { id } = useParams<{ id: string }>();

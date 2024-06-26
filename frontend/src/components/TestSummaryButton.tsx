@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import type { UseFormGetValues } from "react-hook-form";
+
+import { intlFormatDistance } from "date-fns";
+
+import { useApiUrl } from "../context/ApiContext";
+import type { Receipt, SummarizerFormState, SummaryRequest } from "../types";
+import { toSummarizerData } from "../utils";
 import Button from "./Button";
 import { CheckCircle } from "./icons";
 import { useQuery } from "@tanstack/react-query";
-import { intlFormatDistance } from "date-fns";
-import type { Receipt, SummaryRequest, SummarizerFormState } from "../types";
-import type { UseFormGetValues } from "react-hook-form";
-import { toSummarizerData } from "../utils";
-import { useApiUrl } from "../context/ApiContext";
 
 export default function TestSummaryButton({
     summarizerId,
@@ -64,7 +66,7 @@ export default function TestSummaryButton({
             onError: (error) => {
                 console.error(error);
             },
-        }
+        },
     );
 
     async function generateTestSummary() {

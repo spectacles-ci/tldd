@@ -1,4 +1,8 @@
 {
     "printWidth": 120,
-    "tabWidth": 4
+    "tabWidth": 4,
+    "importOrder": ["^react", "^(?!(react|@core/))\\w+", "", "^@(core|ui)/", "^."],
+    "importOrderSeparation": true,
+    "importOrderSortSpecifiers": true,
+    "plugins": ["@trivago/prettier-plugin-sort-imports"]
 }
