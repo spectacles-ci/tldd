@@ -40,6 +40,12 @@ logger = logging.getLogger(__name__)
 firestore_client = FirestoreClient(project=PROJECT_ID, database=PROJECT_ID)
 
 
+@app.get("/")
+async def healthcheck() -> dict[str, Any]:
+    """Healthcheck endpoint."""
+    return {"status": "ok"}
+
+
 @app.post("/summarizer/{summarizer_id}")
 async def create_summarizer(summarizer_id: str, summarizer: Summarizer) -> None:
     """Endpoint to create a summarizer."""
