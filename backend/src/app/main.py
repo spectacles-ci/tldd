@@ -3,8 +3,10 @@
 import base64
 import logging
 import os
+import re
 from datetime import datetime
 from http import HTTPStatus
+from pathlib import Path
 from typing import Any
 
 import resend
@@ -138,36 +140,31 @@ async def summarize(data: SummaryRequest) -> dict[str, Any]:
                 )
 
     # Build the prompt
-    prompt = (
-        "You are the world's best data analyst. Generate the most useful report possible from the PDF, "
-        "highlighting key metrics and action-worthy insights. Summarise all the key metrics and findings from the report."
-        "The response you provide is going to be added to an email as-is. Please format your answer in a way that will make "
-        "a beautiful and easily readable email. It should be plain text, not HTML, but should use new lines where appropriate "
-        "and outline the information in an easy to read way."
-    )
+    system_instruction_path = Path(__file__).parent / "prompts" / "system.txt"
+    system_instruction = system_instruction_path.read_text()
 
     if summarizer.use_prior_reports and prior_summary:
-        prompt += (
-            "\n\nThe prior PDF is included. It is the second PDF included. The first PDF is the current report. "
-            "Use the prior report to highlight changes and comparisons. You should highlight how metrics have changed "
-            "(or not changed) between the prior report and the current report. Only reference the prior report if it "
-            "is interesting and useful to do so. Prior report content: \n\n----Beginning of Prior Report----"
-            f"\n\n{prior_summary.body}\n\n----End of Prior Report----"
-        )
+        prior_report_prompt_path = Path(__file__).parent / "prompts" / "prior.txt"
+        prompt = prior_report_prompt_path.read_text()
+        prompt = re.sub(r"{{ previous_dashboard_summary }}", prior_summary.body, prompt)
+        prompt_chunks = [prompt]
+    else:
+        prompt_file_path = Path(__file__).parent / "prompts" / "default.txt"
+        prompt_chunks = [prompt_file_path.read_text()]
 
     if summarizer.custom_instructions:
-        prompt += (
-            "\n\nThe recipient of the summary has provided custom instructions. "
-            "Factor these instructions into the report. The instructions are: \n\n"
-            f"----Beginning of Custom Instructions----\n\n{summarizer.custom_instructions}"
-            "\n\n----End of Custom Instructions----"
+        prompt_chunks.append(
+            f"You must also follow these instructions: {summarizer.custom_instructions}"
         )
 
+    prompt = "\n\n".join(prompt_chunks)
     logger.info(f"Prompt: {prompt}")
 
     # Run the summarizer
     vertexai.init(project=PROJECT_ID, location="us-central1")
-    model = GenerativeModel(model_name="gemini-1.5-pro-001")
+    model = GenerativeModel(
+        model_name="gemini-1.5-pro-001", system_instruction=system_instruction
+    )
     report_location = f"gs://vertex-dashboards/{receipt.report_location}"
     pdf_file = Part.from_uri(report_location, mime_type="application/pdf")
     contents = [prompt, pdf_file]
