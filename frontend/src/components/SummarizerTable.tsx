@@ -9,7 +9,9 @@ export default function SummarizerTable({ summarizers }: { summarizers: Summariz
     const itemsPerPage = 10;
     const history = useHistory();
 
-    const totalPages = Math.ceil(summarizers.length / itemsPerPage);
+    // Sort summarizers by name before pagination
+    const sortedSummarizers = summarizers.sort((a, b) => a.name.localeCompare(b.name));
+    const totalPages = Math.ceil(sortedSummarizers.length / itemsPerPage);
 
     const handlePreviousPage = () => {
         setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
@@ -25,7 +27,7 @@ export default function SummarizerTable({ summarizers }: { summarizers: Summariz
     };
 
     const startIndex = (currentPage - 1) * itemsPerPage;
-    const currentItems = summarizers.slice(startIndex, startIndex + itemsPerPage);
+    const currentItems = sortedSummarizers.slice(startIndex, startIndex + itemsPerPage);
 
     const handleRowClick = (id: string) => {
         history.push(`/edit/${id}`);
@@ -86,8 +88,8 @@ export default function SummarizerTable({ summarizers }: { summarizers: Summariz
                     <td colSpan={3} className="px-6 py-3 bg-gray-100">
                         <div className="flex justify-between items-center">
                             <span className="text-sm text-gray-700">
-                                Showing {startIndex + 1} to {Math.min(startIndex + itemsPerPage, summarizers.length)} of{" "}
-                                {summarizers.length} results
+                                Showing {startIndex + 1} to {Math.min(startIndex + itemsPerPage, sortedSummarizers.length)} of{" "}
+                                {sortedSummarizers.length} results
                             </span>
                             <div className="flex gap-x-4">
                                 <Button variant="secondary" onClick={handlePreviousPage} enabled={currentPage !== 1}>
