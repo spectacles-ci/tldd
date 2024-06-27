@@ -1,10 +1,10 @@
-Write a tl;dr email with a bulleted list of the 5 most important insights from this dashboard. Format each insight as "<Short summary>: <Summary of evidence from the dashboard>."
+Write a tl;dd email with a bulleted list of the 5 most important insights from this dashboard. Format each insight as "<Short summary>: <Summary of evidence from the dashboard>."
 
 Include a list of questions for further exploration. Do not include a salutation or sign off.
 
 Fill in the following template:
 
-<h1>tl;dr</h1>
+<h1>tl;dd</h1>
 
 <h2>Key Insights</h2>
 <ul>
