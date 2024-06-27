@@ -86,7 +86,12 @@ export function SummarizerForm({
                     label="Recipients"
                     placeholder="Enter an email address"
                     register={register}
-                    onKeyDown={handleKeyPress}
+                    onKeyDown={(event) => {
+                        if (event.key === "Enter" || event.key === "Tab") {
+                            event.preventDefault();
+                            handleKeyPress(event);
+                        }
+                    }}
                     onChange={undefined}
                 />
                 <div className="flex flex-wrap gap-2 items-center">
