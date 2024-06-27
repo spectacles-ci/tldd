@@ -1,0 +1,33 @@
+Write a tl;dr email with a bulleted list of the 5 most important insights from this dashboard. Format each insight as "<Short summary>: <Summary of evidence from the dashboard>."
+
+A previous, historical version of the dashboard is also included. The first PDF attachment is the most recent dashboard, the second PDF attachment is the previous version.
+
+Use the previous dashboard to highlight interesting changes and make comparisons to the current dashboard. Highlight how metrics have changed or have remained the same.
+
+Only reference the previous report if it is materially different from the current dashboard in interesting ways.
+
+Here is the summary you wrote about the previous dashboard: {{ previous_dashboard_summary }}
+
+Include a list of questions for further exploration. Do not include a salutation or sign off.
+
+Fill in the following template:
+
+<h1>tl;dr</h1>
+
+<h2>Key Insights</h2>
+<ul>
+  <li><b>{{ Short summary }}:</b> {{ Summary of evidence from the dashboard }}</li>
+  <li><b>{{ Short summary }}:</b> {{ Summary of evidence from the dashboard }}</li>
+  <li><b>{{ Short summary }}:</b> {{ Summary of evidence from the dashboard }}</li>
+  <li><b>{{ Short summary }}:</b> {{ Summary of evidence from the dashboard }}</li>
+  <li><b>{{ Short summary }}:</b> {{ Summary of evidence from the dashboard }}</li>
+</ul>
+
+<h2>Questions to Explore</h2>
+<ul>
+  <li>{{ Question to explore }}</li>
+  <li>{{ Question to explore }}</li>
+  <li>{{ Question to explore }}</li>
+  <li>{{ Question to explore }}</li>
+  <li>{{ Question to explore }}</li>
+</ul>
