@@ -59,7 +59,7 @@ application: tldd {
 
 tl;dd is composed of a **React** frontend, styled with **Tailwind CSS**. It uses the **Looker Extension SDK** to copy to clipboard and submit forms to the backend API.
 
-The backend API is a **FastAPI** (Python) application with a **Cloud Firestore** document-storage database. The backend API communicates with the `gemini-pro-1.5` model on **Vertex AI** to generate summaries.
+The backend API is a **FastAPI** (Python) application run on **Cloud Run** with a **Cloud Firestore** document-storage database. The backend API communicates with the `gemini-pro-1.5` model on **Vertex AI** to generate summaries.
 
 Received documents from Looker are stored in **Google Cloud Storage**, which is also used as a basic CDN for serving the frontend JavaScript bundle.
 
