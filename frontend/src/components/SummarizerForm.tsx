@@ -122,9 +122,10 @@ export function SummarizerForm({
             <TextArea id="customInstructions" label="Custom Instructions" register={register} />
             <TestSummaryButton summarizerId={summarizerId} getSummarizer={getValues} setTestSummary={setTestSummary} />
             {testSummary && (
-                <div className="p-4 leading-7 text-gray-800 whitespace-pre-line bg-white rounded border border-gray-400 shadow-sm">
-                    {testSummary}
-                </div>
+                <div
+                    className="p-4 leading-7 text-gray-800 whitespace-pre-line bg-white rounded border border-gray-400 shadow-sm"
+                    dangerouslySetInnerHTML={{ __html: testSummary }}
+                />
             )}
             <div className="flex justify-end gap-x-4">
                 {actions.map((action, index) => (
