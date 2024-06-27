@@ -10,6 +10,7 @@ import { Summarizer, SummarizerFormState } from "../types";
 import { X } from "./icons";
 import { useApiUrl } from "../context/ApiContext";
 import { useHistory } from "react-router-dom";
+import DOMPurify from "dompurify";
 
 export function SummarizerForm({
     form,
@@ -44,7 +45,7 @@ export function SummarizerForm({
                 }
             }
         },
-        [recipients, setValue],
+        [recipients, setValue]
     );
 
     const onSubmit: SubmitHandler<SummarizerFormState> = async (data) => {
@@ -56,7 +57,7 @@ export function SummarizerForm({
                 acc[newKey] = postData[key as keyof Omit<Summarizer, "recipient">];
                 return acc;
             },
-            {},
+            {}
         );
         await fetch(`${apiUrl}/summarizer/`, {
             method: "POST",
@@ -95,7 +96,7 @@ export function SummarizerForm({
                             onClick={() =>
                                 setValue(
                                     "recipients",
-                                    recipients.filter((_, i) => i !== index),
+                                    recipients.filter((_, i) => i !== index)
                                 )
                             }
                             key={`${recipient}-${index}`}
@@ -123,11 +124,11 @@ export function SummarizerForm({
             <TestSummaryButton summarizerId={summarizerId} getSummarizer={getValues} setTestSummary={setTestSummary} />
             {testSummary && (
                 <div
-                    className="p-4 leading-7 text-gray-800 whitespace-pre-line bg-white rounded border border-gray-400 shadow-sm"
-                    dangerouslySetInnerHTML={{ __html: testSummary }}
+                    className="p-4 bg-white rounded border border-gray-400 shadow-sm prose"
+                    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(testSummary.replace(/\n/g, "")) }}
                 />
             )}
-            <div className="flex justify-end gap-x-4">
+            <div className="flex gap-x-4 justify-end">
                 {actions.map((action, index) => (
                     <Button
                         key={index}
