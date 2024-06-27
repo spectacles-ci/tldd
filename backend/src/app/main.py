@@ -270,7 +270,7 @@ async def receive_webhook(summarizer_id: str, webhook: DashboardWebhook) -> None
     email_payload: resend.Emails.SendParams = {
         "from": "hello@spectacles.dev",
         "to": summarizer_config.recipients,
-        "subject": "tl;dd: Your Dashboard",  # TODO: Get the actual dashboard name
+        "subject": f"tl;dd: {webhook.scheduled_plan.title}",
         "html": response["body"].replace("\n", ""),
     }
     if summarizer_config.attach_pdf:
