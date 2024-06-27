@@ -269,7 +269,7 @@ async def receive_webhook(summarizer_id: str, webhook: DashboardWebhook) -> None
     )
 
     resend.api_key = os.getenv("RESEND_API_KEY")
-    with open("src/app/email.html", "r") as file:
+    with open("src/app/templates/email.html", "r") as file:
         email_template = file.read()
 
     email_template = email_template.replace("__body__", response["body"])
