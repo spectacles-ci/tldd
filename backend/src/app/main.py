@@ -271,7 +271,7 @@ async def receive_webhook(summarizer_id: str, webhook: DashboardWebhook) -> None
 
     email_template = email_template.replace("__body__", response["body"])
 
-    email_payload = {
+    email_payload: resend.Emails.SendParams = {
         "from": "hello@spectacles.dev",
         "to": summarizer_config.recipients,
         "subject": "Your Dashboard Has Been AI Analyzed!",
