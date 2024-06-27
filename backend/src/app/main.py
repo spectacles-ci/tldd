@@ -3,8 +3,10 @@
 import base64
 import logging
 import os
+import re
 from datetime import datetime
 from http import HTTPStatus
+from pathlib import Path
 from typing import Any
 
 import resend
@@ -80,6 +82,7 @@ async def get_summarizer(summarizer_id: str) -> dict[str, Any]:
     last_receipt = await _get_last_receipt(summarizer_id)
     if last_receipt:
         summarizer_dict["last_receipt_timestamp"] = last_receipt["timestamp"]
+    logger.info(f"Summarizer {summarizer_id} has been retrieved from Firestore.")
     return summarizer_dict  # type: ignore[no-any-return]
 
 
@@ -94,6 +97,7 @@ async def list_summarizers() -> list[dict[str, Any]]:
         if last_receipt:
             summarizer_dict["last_receipt_timestamp"] = last_receipt["timestamp"]
         response.append(summarizer_dict)
+    logger.info("Summarizers have been retrieved from Firestore.")
     return response
 
 
@@ -101,6 +105,21 @@ async def list_summarizers() -> list[dict[str, Any]]:
 async def delete_summarizer(summarizer_id: str) -> None:
     """Endpoint to delete a summarizer."""
     firestore_client.collection("summarizers").document(summarizer_id).delete()
+    logger.info(f"Summarizer {summarizer_id} has been deleted from Firestore.")
+
+
+async def _get_prior_summary(summarizer_id: str) -> Summary | None:
+    """Get the last summary for a given summarizer_id."""
+    summaries = (
+        firestore_client.collection("summaries")
+        .where("summarizer_id", "==", summarizer_id)
+        .order_by("timestamp", direction="DESCENDING")
+        .limit(1)
+        .get()
+    )
+    if summaries:
+        return Summary(**summaries[0].to_dict())
+    return None
 
 
 @app.post("/summarizer/{summarizer_id}/summarize")
@@ -109,17 +128,48 @@ async def summarize(data: SummaryRequest) -> dict[str, Any]:
     summarizer = data.summarizer  # noqa: F841
     receipt = data.receipt
 
+    if summarizer.use_prior_reports:
+        prior_summary = await _get_prior_summary(summarizer.id)
+        if prior_summary:
+            if prior_summary:
+                prior_report_location = (
+                    f"gs://vertex-dashboards/{prior_summary.report_location}"
+                )
+                prior_report_pdf = Part.from_uri(
+                    prior_report_location, mime_type="application/pdf"
+                )
+
+    # Build the prompt
+    system_instruction_path = Path(__file__).parent / "prompts" / "system.txt"
+    system_instruction = system_instruction_path.read_text()
+
+    if summarizer.use_prior_reports and prior_summary:
+        prior_report_prompt_path = Path(__file__).parent / "prompts" / "prior.txt"
+        prompt = prior_report_prompt_path.read_text()
+        prompt = re.sub(r"{{ previous_dashboard_summary }}", prior_summary.body, prompt)
+        prompt_chunks = [prompt]
+    else:
+        prompt_file_path = Path(__file__).parent / "prompts" / "default.txt"
+        prompt_chunks = [prompt_file_path.read_text()]
+
+    if summarizer.custom_instructions:
+        prompt_chunks.append(
+            f"You must also follow these instructions: {summarizer.custom_instructions}"
+        )
+
+    prompt = "\n\n".join(prompt_chunks)
+    logger.info(f"Prompt: {prompt}")
+
     # Run the summarizer
     vertexai.init(project=PROJECT_ID, location="us-central1")
-    model = GenerativeModel(model_name="gemini-1.5-pro-001")
-    # TODO: Prompt engineering and RAG
-    prompt = """
-        You are a very professional document summarization specialist.
-        Please summarize the given document.
-    """
+    model = GenerativeModel(
+        model_name="gemini-1.5-pro-001", system_instruction=system_instruction
+    )
     report_location = f"gs://vertex-dashboards/{receipt.report_location}"
     pdf_file = Part.from_uri(report_location, mime_type="application/pdf")
-    contents = [pdf_file, prompt]
+    contents = [prompt, pdf_file]
+    if summarizer.use_prior_reports and prior_summary:
+        contents.append(prior_report_pdf)
     response = model.generate_content(contents)
 
     # Save the Summary
@@ -216,22 +266,29 @@ async def receive_webhook(summarizer_id: str, webhook: DashboardWebhook) -> None
     )
 
     resend.api_key = os.getenv("RESEND_API_KEY")
-    attachment = resend.Attachment(filename="dashboard.pdf", content=attachment_data)
+    with open("src/app/templates/email.html", "r") as file:
+        email_template = file.read()
+
+    email_template = email_template.replace("__body__", response["body"])
+
+    email_payload = {
+        "from": "hello@spectacles.dev",
+        "to": summarizer_config.recipients,
+        "subject": "Your Dashboard Has Been AI Analyzed!",
+        "html": email_template,
+    }
+    if summarizer_config.attach_pdf:
+        attachment = resend.Attachment(
+            filename="dashboard.pdf", content=attachment_data
+        )
+        email_payload["attachments"] = [attachment]
 
     with open("src/app/email.html", "r") as file:
         email_template = file.read()
 
     email_template = email_template.replace("__body__", response["body"])
 
-    resend.Emails.send(
-        {
-            "from": "hello@spectacles.dev",
-            "to": summarizer_config.recipients,
-            "subject": "Your Dashboard Has Been AI Analyzed!",
-            "html": email_template,
-            "attachments": [attachment],
-        }
-    )
+    resend.Emails.send(email_payload)
 
 
 def main() -> None:

@@ -1,0 +1,1 @@
+Return all results formatted as basic HTML. You may use the following tags: <p>, <span>, <ul>, <li>, <b>, <h1>, <h2>. Do not return a code block or Markdown.
