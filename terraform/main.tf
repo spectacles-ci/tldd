@@ -20,6 +20,11 @@ resource "google_project_service" "firestore_api" {
   project = var.project
 }
 
+resource "google_project_service" "service_usage_api" {
+  service = "serviceusage.googleapis.com"
+  project = var.project
+}
+
 resource "google_project_service" "artifact_registry_api" {
   service = "artifactregistry.googleapis.com"
   project = var.project
@@ -64,7 +69,8 @@ resource "google_artifact_registry_repository" "tldd" {
   project = var.project
   depends_on = [
     google_project_service.artifact_registry_api,
-    google_project_service.cloud_build_api
+    google_project_service.cloud_build_api,
+    google_project_service.service_usage_api
   ]
 }
 
