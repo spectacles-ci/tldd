@@ -81,7 +81,7 @@ jobs:
       - name: Build and push Docker image
         working-directory: ./backend
         env:
-          IMAGE_NAME: us-central1-docker.pkg.dev/${{ github.GCP_PROJECT_ID }}/tldd/tldd:${{ github.sha }}
+          IMAGE_NAME: us-central1-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/tldd/tldd:${{ github.sha }}
         run: |
           cp ../tmp/keys/google_application_credentials.json .
           docker build -t $IMAGE_NAME . --platform linux/amd64
