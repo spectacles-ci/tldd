@@ -49,7 +49,7 @@ resource "google_cloud_run_service" "tldd" {
   template {
     spec {
       containers {
-        image = "us-central1-docker.pkg.dev/tldd/tldd/tldd:${var.run_hash}"
+        image = "us-central1-docker.pkg.dev/${var.project}/tldd/tldd:${var.run_hash}"
         ports {
           container_port = 8000
         }
