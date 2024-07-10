@@ -75,6 +75,7 @@ jobs:
           TF_VAR_region: ${{ vars.GCP_REGION }}
           TF_VAR_run_hash: ${{ github.sha }}
           TF_VAR_pdf_bucket: ${{ vars.GCP_PDF_BUCKET }}
+          TF_VAR_resend_api_key: ${{ secrets.RESEND_API_KEY }}
         working-directory: ./terraform
         run: terraform apply -auto-approve -target=google_artifact_registry_repository.tldd
 
@@ -95,6 +96,7 @@ jobs:
           TF_VAR_region: ${{ vars.GCP_REGION }}
           TF_VAR_run_hash: ${{ github.sha }}
           TF_VAR_pdf_bucket: ${{ vars.GCP_PDF_BUCKET }}
+          TF_VAR_resend_api_key: ${{ secrets.RESEND_API_KEY }}
         run: terraform apply -auto-approve
 
       - name: Install frontend dependencies
