@@ -59,15 +59,6 @@ jobs:
           mkdir -p tmp/keys
           echo $SERVICE_ACCOUNT_KEY > tmp/keys/google_application_credentials.json
 
-      - name: Build and push Docker image
-        working-directory: ./backend
-        env:
-          IMAGE_NAME: us-central1-docker.pkg.dev/vertex-dashboards/vertex-dashboards/vertex-dashboards:${{ github.sha }}
-        run: |
-          cp ../tmp/keys/google_application_credentials.json .
-          docker build -t $IMAGE_NAME . --platform linux/amd64
-          docker push $IMAGE_NAME
-
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
@@ -77,11 +68,33 @@ jobs:
         working-directory: ./terraform
         run: terraform init
 
+      - name: Apply Terraform (artifact registry)
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ../tmp/keys/google_application_credentials.json
+          TF_VAR_project: ${{ secrets.GCP_PROJECT_ID }}
+          TF_VAR_region: ${{ secrets.GCP_REGION }}
+          TF_VAR_run_hash: ${{ github.sha }}
+          TF_VAR_pdf_bucket: ${{ secrets.GCP_PDF_BUCKET }}
+        working-directory: ./terraform
+        run: terraform apply -auto-approve -target=google_artifact_registry_repository.tldd
+
+      - name: Build and push Docker image
+        working-directory: ./backend
+        env:
+          IMAGE_NAME: us-central1-docker.pkg.dev/${{ github.GCP_PROJECT_ID }}/tldd/tldd:${{ github.sha }}
+        run: |
+          cp ../tmp/keys/google_application_credentials.json .
+          docker build -t $IMAGE_NAME . --platform linux/amd64
+          docker push $IMAGE_NAME
+
       - name: Apply Terraform
         working-directory: ./terraform
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ../tmp/keys/google_application_credentials.json
+          TF_VAR_project: ${{ secrets.GCP_PROJECT_ID }}
+          TF_VAR_region: ${{ secrets.GCP_REGION }}
           TF_VAR_run_hash: ${{ github.sha }}
+          TF_VAR_pdf_bucket: ${{ secrets.GCP_PDF_BUCKET }}
         run: terraform apply -auto-approve
 
       - name: Install frontend dependencies

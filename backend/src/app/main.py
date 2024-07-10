@@ -238,7 +238,7 @@ async def receive_webhook(summarizer_id: str, webhook: DashboardWebhook) -> None
 
     # Save the attachment to GCS
     storage_client = StorageClient(project=PROJECT_ID)
-    bucket = storage_client.bucket("vertex-dashboards")
+    bucket = storage_client.bucket(os.getenv("PDF_BUCKET"))
     timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
     blob = bucket.blob(f"summaries/{summarizer_id}/{timestamp}.pdf")
     blob.upload_from_string(decoded_data, content_type="application/pdf")
