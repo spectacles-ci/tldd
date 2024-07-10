@@ -11,7 +11,7 @@ export const ApiProvider = ({ children }: { children: ReactNode }) => {
 
     useEffect(() => {
         const getAttribute = async () => {
-            const attribute = await lookerExtension.extensionSDK.userAttributeGetItem("looker_hackathon_vertexai_tldd_api");
+            const attribute = await lookerExtension.extensionSDK.userAttributeGetItem("tldd_api");
             setApiUrl(attribute ?? "");
         };
 

@@ -16,7 +16,7 @@ export function SummarizerWebhook({ summarizerId }: { summarizerId: string }) {
     const { extensionSDK } = extensionContext;
 
     const getAttribute = useCallback(async () => {
-        const attribute = await extensionSDK.userAttributeGetItem("looker_hackathon_vertexai_tldd_api");
+        const attribute = await extensionSDK.userAttributeGetItem("tldd_api");
         const apiUrl = attribute ?? "";
         setWebhookUrl(`${apiUrl}/webhook/${summarizerId}`);
     }, [apiUrl, summarizerId, extensionSDK]);
