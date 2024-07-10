@@ -10,7 +10,7 @@ resource "google_storage_bucket" "tldd" {
 
 terraform {
   backend "gcs" {
-    bucket = "testing-tldd-tfstate"
+    bucket = "tf-state-vertex-dashboards"
     prefix = "tldd"
   }
 }
