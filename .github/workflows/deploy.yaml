@@ -71,10 +71,10 @@ jobs:
       - name: Apply Terraform (artifact registry)
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ../tmp/keys/google_application_credentials.json
-          TF_VAR_project: ${{ secrets.GCP_PROJECT_ID }}
-          TF_VAR_region: ${{ secrets.GCP_REGION }}
+          TF_VAR_project: ${{ vars.GCP_PROJECT_ID }}
+          TF_VAR_region: ${{ vars.GCP_REGION }}
           TF_VAR_run_hash: ${{ github.sha }}
-          TF_VAR_pdf_bucket: ${{ secrets.GCP_PDF_BUCKET }}
+          TF_VAR_pdf_bucket: ${{ vars.GCP_PDF_BUCKET }}
         working-directory: ./terraform
         run: terraform apply -auto-approve -target=google_artifact_registry_repository.tldd
 
