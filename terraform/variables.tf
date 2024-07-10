@@ -17,8 +17,3 @@ variable "pdf_bucket" {
   description = "The name of the bucket to store the PDFs in"
   type        = string
 }
-
-variable "resend_api_key" {
-  description = "The API key for Resend"
-  type        = string
-}

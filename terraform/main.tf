@@ -33,9 +33,6 @@ resource "google_secret_manager_secret" "resend_api_key" {
       }
     }
   }
-  secret_data {
-    value = var.resend_api_key
-  }
 }
 
 resource "google_firestore_database" "tldd" {
