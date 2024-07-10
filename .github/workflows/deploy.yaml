@@ -118,3 +118,4 @@ jobs:
           gsutil -m cp -r dist/bundle.js gs://tldd-frontend/
           gsutil acl ch -u AllUsers:R gs://tldd-frontend/bundle.js
           gsutil cors set cors-config.json gs://tldd-frontend
+          gsutil setmeta -h "Cache-Control:no-store" gs://tldd-frontend/bundle.js
