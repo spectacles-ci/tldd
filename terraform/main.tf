@@ -35,6 +35,12 @@ resource "google_secret_manager_secret" "resend_api_key" {
   }
 }
 
+resource "google_secret_manager_secret_iam_member" "resend_api_key_accessor" {
+  secret_id = google_secret_manager_secret.resend_api_key.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_cloud_run_service.tldd.template.spec.service_account_name}"
+}
+
 resource "google_firestore_database" "tldd" {
   name     = "tldd"
   project  = var.project
