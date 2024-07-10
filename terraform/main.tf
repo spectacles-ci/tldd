@@ -15,51 +15,6 @@ terraform {
   }
 }
 
-resource "google_project_service" "firestore_api" {
-  service = "firestore.googleapis.com"
-  project = var.project
-}
-
-resource "google_project_service" "service_usage_api" {
-  service = "serviceusage.googleapis.com"
-  project = var.project
-}
-
-resource "google_project_service" "artifact_registry_api" {
-  service = "artifactregistry.googleapis.com"
-  project = var.project
-}
-
-resource "google_project_service" "cloud_logging_api" {
-  service = "logging.googleapis.com"
-  project = var.project
-}
-
-resource "google_project_service" "cloud_resource_manager_api" {
-  service = "cloudresourcemanager.googleapis.com"
-  project = var.project
-}
-
-resource "google_project_service" "cloud_run_admin_api" {
-  service = "run.googleapis.com"
-  project = var.project
-}
-
-resource "google_project_service" "secret_manager_api" {
-  service = "secretmanager.googleapis.com"
-  project = var.project
-}
-
-resource "google_project_service" "cloud_build_api" {
-  service = "cloudbuild.googleapis.com"
-  project = var.project
-}
-
-resource "google_project_service" "cloud_firestore_api" {
-  service = "firestore.googleapis.com"
-  project = var.project
-}
-
 resource "google_artifact_registry_repository" "tldd" {
   provider = google
   format   = "DOCKER"
@@ -67,11 +22,6 @@ resource "google_artifact_registry_repository" "tldd" {
   repository_id = "tldd"
   description   = "Artifact Registry for tldd"
   project = var.project
-  depends_on = [
-    google_project_service.artifact_registry_api,
-    google_project_service.cloud_build_api,
-    google_project_service.service_usage_api
-  ]
 }
 
 resource "google_secret_manager_secret" "resend_api_key" {
@@ -83,9 +33,6 @@ resource "google_secret_manager_secret" "resend_api_key" {
       }
     }
   }
-  depends_on = [
-    google_project_service.secret_manager_api
-  ]
 }
 
 resource "google_firestore_database" "tldd" {
@@ -93,9 +40,6 @@ resource "google_firestore_database" "tldd" {
   project  = var.project
   location_id = var.region
   type     = "FIRESTORE_NATIVE"
-  depends_on = [
-    google_project_service.firestore_api
-  ]
 }
 
 resource "google_cloud_run_service" "tldd" {
@@ -138,11 +82,6 @@ resource "google_cloud_run_service" "tldd" {
       "run.googleapis.com/ingress" = "all"
     }
   }
-
-  depends_on = [
-    google_project_service.cloud_run_admin_api,
-    google_project_service.secret_manager_api
-  ]
 }
 
 resource "google_cloud_run_service_iam_member" "tldd_invoker" {
@@ -150,7 +89,4 @@ resource "google_cloud_run_service_iam_member" "tldd_invoker" {
   location = google_cloud_run_service.tldd.location
   role    = "roles/run.invoker"
   member  = "allUsers"
-  depends_on = [
-    google_cloud_run_service.tldd
-  ]
 }
